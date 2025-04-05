@@ -4,7 +4,7 @@ import supabase from '../util/supabaseClient.js'
 
 const Login = () => {
   const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [pass, setPass] = useState('')
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const [isSignUp, setIsSignUp] = useState(false)
@@ -25,7 +25,7 @@ const Login = () => {
         // Handle sign up
         const { error: authError } = await supabase.auth.signUp({
           email,
-          password,
+          pass,
         })
 
         if (authError) throw authError
@@ -35,12 +35,13 @@ const Login = () => {
           .from('users')
           .insert([
             { 
-              email, 
+              email: email,
               first_name: firstName,
               last_name: lastName,
               is_farmer: isFarmer,
-              phone_number: phone,
-              created_at: new Date()
+              phone_num: phone,
+              created_at: new Date(),
+              password: pass,
             }
           ])
 
@@ -51,7 +52,7 @@ const Login = () => {
         // Handle sign in
         const { error: authError } = await supabase.auth.signInWithPassword({
           email,
-          password
+          pass
         })
 
         if (authError) throw authError
@@ -136,8 +137,8 @@ const Login = () => {
             <input
               type="password"
               id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={pass}
+              onChange={(e) => setPass(e.target.value)}
               required
             />
           </div>
