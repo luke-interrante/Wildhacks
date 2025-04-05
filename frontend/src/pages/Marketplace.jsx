@@ -137,7 +137,7 @@ const Marketplace = () => {
                 </div>
                 <div className="product-info">
                   <h3>{item.name}</h3>
-                  <p className="product-price">${item.price}</p>
+                  <p className="product-price">${(item.price).toFixed(2)}</p>
                   {item.farmer_id && farmers[item.farmer_id] && (
                     <p className="product-farmer">
                       By: {farmers[item.farmer_id].first_name} {farmers[item.farmer_id].last_name}
