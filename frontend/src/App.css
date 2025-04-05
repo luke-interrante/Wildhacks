@@ -82,6 +82,50 @@ button {
   color: var(--primary-color);
 }
 
+/* Navbar user elements */
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-left: var(--spacing-md);
+}
+
+.nav-user-photo {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--primary-light);
+}
+
+.nav-user-initials {
+  width: 32px;
+  height: 32px;
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.nav-signout {
+  font-size: 14px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: none;
+  color: var(--text-light);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+}
+
+.nav-signout:hover {
+  background-color: #f5f5f5;
+  color: var(--text-color);
+}
+
 /* Home page */
 .home-container {
   display: flex;

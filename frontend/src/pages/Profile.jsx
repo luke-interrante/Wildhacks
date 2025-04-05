@@ -32,6 +32,17 @@ const Profile = () => {
       try {
         setLoading(true)
         
+        // First check if we have an active session
+        const { data: sessionData, error: sessionError } = await supabase.auth.getSession()
+        
+        if (sessionError) throw sessionError
+        
+        // If no active session, redirect to login
+        if (!sessionData.session) {
+          navigate('/login')
+          return
+        }
+        
         // Get current user
         const { data: { user }, error: userError } = await supabase.auth.getUser()
         

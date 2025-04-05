@@ -1,64 +1,39 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
 import supabase from '../util/supabaseClient.js'
+import { useAuth } from '../context/AuthContext.jsx'
 
 const Login = () => {
   const [email, setEmail] = useState('')
   const [pass, setPass] = useState('')
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
-  const [isSignUp, setIsSignUp] = useState(false)
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [isFarmer, setIsFarmer] = useState(false)
-  const [phone, setPhone] = useState('')
-
+  
   const navigate = useNavigate()
+  const { isAuthenticated } = useAuth()
+  
+  // Redirect if already logged in
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/')
+    }
+  }, [isAuthenticated, navigate])
 
-  const handleAuth = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
     setLoading(true)
     setError(null)
 
     try {
-      if (isSignUp) {
-        // Handle sign up
-        const { error: authError } = await supabase.auth.signUp({
-          email,
-          pass,
-        })
+      // Handle sign in
+      const { error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password: pass
+      })
 
-        if (authError) throw authError
-
-        // Insert into users table
-        const { error: userError } = await supabase
-          .from('users')
-          .insert([
-            { 
-              email: email,
-              first_name: firstName,
-              last_name: lastName,
-              is_farmer: isFarmer,
-              phone_num: phone,
-              created_at: new Date(),
-              password: pass,
-            }
-          ])
-
-        if (userError) throw userError
-        
-        alert('Sign up successful! Please check your email for verification.')
-      } else {
-        // Handle sign in
-        const { error: authError } = await supabase.auth.signInWithPassword({
-          email,
-          pass
-        })
-
-        if (authError) throw authError
-        
-        navigate('/')
-      }
+      if (authError) throw authError
+      
+      navigate('/')
     } catch (error) {
       setError(error.message)
     } finally {
@@ -69,58 +44,11 @@ const Login = () => {
   return (
     <div className="auth-container">
       <div className="auth-form-container">
-        <h1>{isSignUp ? 'Create Account' : 'Login'}</h1>
+        <h1>Login</h1>
         
         {error && <div className="error-message">{error}</div>}
         
-        <form onSubmit={handleAuth}>
-          {isSignUp && (
-            <>
-              <div className="form-group">
-                <label htmlFor="firstName">First Name</label>
-                <input
-                  type="text"
-                  id="firstName"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="lastName">Last Name</label>
-                <input
-                  type="text"
-                  id="lastName"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  required
-                />
-              </div>
-              
-              <div className="form-group">
-                <label htmlFor="phone">Phone Number</label>
-                <input
-                  type="tel"
-                  id="phone"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  required
-                />
-              </div>
-              
-              <div className="form-group checkbox">
-                <input
-                  type="checkbox"
-                  id="isFarmer"
-                  checked={isFarmer}
-                  onChange={(e) => setIsFarmer(e.target.checked)}
-                />
-                <label htmlFor="isFarmer">I am a farmer</label>
-              </div>
-            </>
-          )}
-          
+        <form onSubmit={handleLogin}>
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
@@ -144,14 +72,12 @@ const Login = () => {
           </div>
           
           <button type="submit" className="auth-button" disabled={loading}>
-            {loading ? 'Processing...' : (isSignUp ? 'Sign Up' : 'Login')}
+            {loading ? 'Processing...' : 'Login'}
           </button>
         </form>
         
         <div className="auth-switch">
-          <button onClick={() => setIsSignUp(!isSignUp)}>
-            {isSignUp ? 'Already have an account? Login' : 'Need an account? Sign Up'}
-          </button>
+          <p>Need an account? <Link to="/signup">Sign Up</Link></p>
         </div>
         
         <div className="auth-options">
