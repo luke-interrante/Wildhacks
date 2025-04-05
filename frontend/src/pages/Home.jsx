@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   return (
@@ -7,8 +8,12 @@ const Home = () => {
         <h1>Welcome to the Community Farmer's Market</h1>
         <p>Connect with local farmers, buy fresh produce, and join our growing community</p>
         <div className="cta-buttons">
+          <Link to="/marketplace">
           <button className="primary-btn">Browse Marketplace</button>
-          <button className="secondary-btn">Join Community</button>
+          </Link>
+          <Link to="/login">
+            <button className="secondary-btn">Join Community</button>
+          </Link>
         </div>
       </section>
       
