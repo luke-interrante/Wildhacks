@@ -1,14 +1,19 @@
 import React from 'react'
+import {Routes, Route, useNavigate} from 'react-router-dom'
 
 const Home = () => {
+  const navigate = useNavigate();
+  const navigateToMarketplace = () => { navigate('/marketplace'); };
+  const navigateToSignup = () => { navigate('/signup'); }
+
   return (
     <div className="home-container">
       <section className="hero">
         <h1>Welcome to the Community Farmer's Market</h1>
         <p>Connect with local farmers, buy fresh produce, and join our growing community</p>
         <div className="cta-buttons">
-          <button className="primary-btn">Browse Marketplace</button>
-          <button className="secondary-btn">Join Community</button>
+          <button onClick={navigateToMarketplace} className="primary-btn">Browse Marketplace</button>
+          <button onClick={navigateToSignup} className="secondary-btn">Join Community</button>
         </div>
       </section>
       
