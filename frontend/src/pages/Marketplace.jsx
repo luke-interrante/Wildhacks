@@ -17,15 +17,14 @@ const Marketplace = () => {
       try {
         setLoading(true)
         
-        let query = supabase
-          .from('items')
-          .select(`
-            *,
-            users:farmer_id (
-              first_name,
-              last_name
-            )
-          `)
+        // Start building the query without awaiting yet
+        let query = supabase.from('items').select(`
+          *,
+          users:farmer_id (
+            first_name,
+            last_name
+          )
+        `)
         
         // Apply filters if set
         if (filters.search) {
@@ -40,6 +39,7 @@ const Marketplace = () => {
           query = query.lte('price', filters.maxPrice)
         }
         
+        // Execute the query after all filters have been applied
         const { data, error } = await query
         
         if (error) {
@@ -120,9 +120,11 @@ const Marketplace = () => {
                 <div className="product-info">
                   <h3>{item.name}</h3>
                   <p className="product-price">${item.price}</p>
-                  <p className="product-farmer">
-                    By: {item.users.first_name} {item.users.last_name}
-                  </p>
+                  {item.users && (
+                    <p className="product-farmer">
+                      By: {item.users.first_name} {item.users.last_name}
+                    </p>
+                  )}
                   <p className="product-description">{item.description}</p>
                   <div className="product-actions">
                     <button 
