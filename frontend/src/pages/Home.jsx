@@ -2,10 +2,6 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 
 const Home = () => {
-  const navigate = useNavigate();
-  const navigateToMarketplace = () => { navigate('/marketplace'); };
-  const navigateToSignup = () => { navigate('/signup'); }
-
   return (
     <div className="home-container">
       <section className="hero">
