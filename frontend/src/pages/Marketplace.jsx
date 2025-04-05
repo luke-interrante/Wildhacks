@@ -11,20 +11,15 @@ const Marketplace = () => {
     maxPrice: '',
     category: ''
   })
+  const [farmers, setFarmers] = useState({})
 
   useEffect(() => {
     const fetchItems = async () => {
       try {
         setLoading(true)
         
-        // Start building the query without awaiting yet
-        let query = supabase.from('items').select(`
-          *,
-          users:farmer_id (
-            first_name,
-            last_name
-          )
-        `)
+        // Start building the query without awaiting yet - just fetch items
+        let query = supabase.from('items').select('*')
         
         // Apply filters if set
         if (filters.search) {
@@ -46,7 +41,30 @@ const Marketplace = () => {
           throw error
         }
         
+        console.log('Items data:', data)
         setItems(data || [])
+
+        // Get unique farmer IDs to fetch farmer info
+        if (data && data.length > 0) {
+          // Get unique farmer Ids
+          const farmerIds = [...new Set(data.map(item => item.farmer_id))].filter(Boolean)
+          
+          if (farmerIds.length > 0) {
+            const { data: farmersData, error: farmersError } = await supabase
+              .from('users')
+              .select('id, first_name, last_name')
+              .in('id', farmerIds)
+            
+            if (!farmersError && farmersData) {
+              // Create a lookup object with farmer_id as key
+              const farmerLookup = {}
+              farmersData.forEach(farmer => {
+                farmerLookup[farmer.id] = farmer
+              })
+              setFarmers(farmerLookup)
+            }
+          }
+        }
       } catch (error) {
         console.error('Error fetching items:', error)
         setError('Failed to load marketplace items')
@@ -120,9 +138,9 @@ const Marketplace = () => {
                 <div className="product-info">
                   <h3>{item.name}</h3>
                   <p className="product-price">${item.price}</p>
-                  {item.users && (
+                  {item.farmer_id && farmers[item.farmer_id] && (
                     <p className="product-farmer">
-                      By: {item.users.first_name} {item.users.last_name}
+                      By: {farmers[item.farmer_id].first_name} {farmers[item.farmer_id].last_name}
                     </p>
                   )}
                   <p className="product-description">{item.description}</p>
