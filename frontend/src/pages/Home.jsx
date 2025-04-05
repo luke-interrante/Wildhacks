@@ -1,5 +1,5 @@
 import React from 'react'
-import {Routes, Route, useNavigate} from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -12,8 +12,12 @@ const Home = () => {
         <h1>Welcome to the Community Farmer's Market</h1>
         <p>Connect with local farmers, buy fresh produce, and join our growing community</p>
         <div className="cta-buttons">
-          <button onClick={navigateToMarketplace} className="primary-btn">Browse Marketplace</button>
-          <button onClick={navigateToSignup} className="secondary-btn">Join Community</button>
+          <Link to="/marketplace">
+          <button className="primary-btn">Browse Marketplace</button>
+          </Link>
+          <Link to="/signup">
+            <button className="secondary-btn">Join Community</button>
+          </Link>
         </div>
       </section>
       
