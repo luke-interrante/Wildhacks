@@ -11,7 +11,7 @@ const Home = () => {
           <Link to="/marketplace">
           <button className="primary-btn">Browse Marketplace</button>
           </Link>
-          <Link to="/login">
+          <Link to="/signup">
             <button className="secondary-btn">Join Community</button>
           </Link>
         </div>
