@@ -14,6 +14,9 @@ const Signup = () => {
   const [isFarmer, setIsFarmer] = useState(false)
   const [phone, setPhone] = useState('')
 
+  const { session, signUpNewUser } = useAuth();
+  console.log(session);
+
   const navigate = useNavigate()
   const { isAuthenticated } = useAuth()
   
