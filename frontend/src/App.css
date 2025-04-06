@@ -1,13 +1,19 @@
 /* Base styles */
-:root {
-  --primary-color: #4caf50;
-  --primary-dark: #388e3c;
-  --primary-light: #c8e6c9;
-  --secondary-color: #ff9800;
-  --text-color: #333;
-  --text-light: #666;
-  --background-color: #f9f9f9;
-  --border-color: #ddd;
+:root, .dark-theme {
+  --primary-color: var(--green-11); /* #4caf50; */
+  --primary-dark: var(--green-10); /* #388e3c; */
+  --primary-light: var(--green-4); /* #c8e6c9; */
+  --secondary-color: #ff9800; /* TODO: pick a color */
+  --text-color: var(--gray-12); /* #333; */
+  --accent-text-color: var(--green-11);
+  --text-light: var(--green-1); /* #666; */
+  --button-background-dark: var(--green-9);
+  --button-hover-background-dark: var(--green-10);
+  --button-background-light: var(--green-5);
+  --button-hover-background-light: var(--green-5);
+  --background-color: var(--color-background); /* var(--green-2); */ /* #f9f9f9; */
+  --accent-background-color: var(--gray-2); /* var(--color-background); */ /* white; */
+  --border-color: var(--green-6); /* #ddd; */
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   --radius: 8px;
@@ -16,6 +22,17 @@
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
+}
+
+/* light theme specific styles */
+:root {
+  /* --accent-background-color: var(--color-background); */
+}
+
+/* dark theme specific styles */
+.dark-theme {
+  /* --background-color: var(--green-1);
+  --accent-background-color: var(--green-3); */
 }
 
 body {
@@ -59,7 +76,7 @@ button {
 
 /* Navbar */
 .navbar {
-  background-color: white;
+  background-color: var(--accent-background-color); /* white; */
   box-shadow: var(--shadow);
   padding: var(--spacing-md) var(--spacing-xl);
   display: flex;
@@ -143,7 +160,7 @@ button {
 
 .hero {
   padding: var(--spacing-xl);
-  background-color: white;
+  background-color: var(--accent-background-color); /* white; */
   border-radius: var(--radius);
   box-shadow: var(--card-shadow);
   text-align: center;
@@ -152,7 +169,7 @@ button {
 
 .hero h1 {
   font-size: 2.5rem;
-  color: var(--primary-color);
+  color: var(--accent-text-color);
   margin-bottom: var(--spacing-md);
 }
 
@@ -164,20 +181,20 @@ button {
 }
 
 .primary-btn {
-  background-color: var(--primary-color);
-  color: white;
+  background-color: var(--button-background-dark);
+  color: var(--text-light); /* white; */ /* TODO: change to lighter color? or at least change it to a top-level variable */
   padding: var(--spacing-md) var(--spacing-lg);
   border-radius: var(--radius);
   font-weight: 600;
 }
 
 .primary-btn:hover {
-  background-color: var(--primary-dark);
+  background-color: var(--button-hover-background-dark);
 }
 
 .secondary-btn {
-  background-color: white;
-  color: var(--primary-color);
+  background-color: var(--button-background-light); /* white; */
+  color: var(--accent-text-color);
   border: 1px solid var(--primary-color);
   padding: var(--spacing-md) var(--spacing-lg);
   border-radius: var(--radius);
@@ -185,12 +202,12 @@ button {
 }
 
 .secondary-btn:hover {
-  background-color: var(--primary-light);
+  background-color: var(--button-hover-background-light);
 }
 
 .featured-products, .farmers-spotlight {
   padding: var(--spacing-lg);
-  background-color: white;
+  background-color: var(--accent-background-color); /* white; */
   border-radius: var(--radius);
   box-shadow: var(--card-shadow);
   margin-bottom: var(--spacing-xl);
@@ -686,4 +703,20 @@ button {
   .marketplace-filters {
     flex-direction: column;
   }
+}
+
+/* Theme toggle button */
+.nav-theme-toggle button {
+  background: none;
+  border: 1px solid var(--border-color);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-theme-toggle button:hover {
+  background-color: var(--button-background-light);
+  color: var(--primary-color);
 }

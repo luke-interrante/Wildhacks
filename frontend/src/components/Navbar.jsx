@@ -1,5 +1,6 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { UserAuth } from '../context/AuthContext'
+import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
   const { session, signOut } = UserAuth();
@@ -40,6 +41,9 @@ const Navbar = () => {
               <Link to="/signup" className="nav-link">Sign Up</Link>
             </>
           )}
+          <div className="nav-theme-toggle">
+            <ThemeToggle /> {/* Add the ThemeToggle button here */}
+          </div>
         </div>
       </nav>
       <div className="content-container">
