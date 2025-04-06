@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+// TODO: import colors.css ?
 import './index.css'
 import App from './App.jsx'
 
