@@ -9,8 +9,6 @@ export function AuthProvider({ children }) {
   // Create or update user in custom users table
   const updateUserTable = async (userData) => {
     try {
-      console.log('Updating user table for:', userData.email);
-
       // First check if the user exists by email
       const { data: existingUsers, error: fetchError } = await supabase
         .from('users')
@@ -28,19 +26,18 @@ export function AuthProvider({ children }) {
       if (existingUser) {
         console.log('Found existing user in custom table');
         return { success: true, data: existingUser };
-      }
-      
-      console.log('Creating new user in custom table');
-      
+      }      
       // If user doesn't exist, create a new one
       const { data: newUser, error: insertError } = await supabase
         .from('users')
         .insert([{ 
           email: userData.email,
-          auth_id: userData.id,
-          first_name: '',
-          last_name: '',
-          is_farmer: false
+          username: userData.username,
+          first_name: userData.first_name || '',
+          last_name: userData.last_name || '',
+          is_farmer: userData.is_farmer || false,
+          phone_num: userData.phone_num || '',
+          created_at: userData.created_at || new Date().toISOString(),
         }])
         .select();
       
@@ -57,7 +54,7 @@ export function AuthProvider({ children }) {
   };
 
   // Sign up function
-  const signUpNewUser = async ( email, password ) => {
+  const signUpNewUser = async ( email, password, firstName, lastName, isFarmer, phone ) => {
     const { data, error } = await supabase.auth.signUp( {
       email: email.toLowerCase(),
       password: password,
@@ -69,9 +66,17 @@ export function AuthProvider({ children }) {
     }
     
     // Add user to custom users table
-    console.log('data.user info:', data.user);
     if (data.user) {
-      const userTableResult = await updateUserTable(data.user);
+      const userData = {
+        email: email,
+        username: `${firstName}${lastName}${Math.floor(1000 + Math.random() * 9000)}`,
+        first_name: firstName,
+        last_name: lastName,
+        is_farmer: isFarmer,
+        phone_num: phone,
+        created_at: new Date().toISOString()
+      }
+      const userTableResult = await updateUserTable(userData);
       if (!userTableResult.success) {
         console.log('Error updating user table:', userTableResult.error);
         // Note: We don't return here as the auth signup was successful
@@ -93,18 +98,6 @@ export function AuthProvider({ children }) {
       if (error) {
         console.log("sign in error occured", error.message);
         return { success: false, error: error.message }
-      }
-
-      // if no error, return success
-      console.log('sign in success!', data);
-      
-      // Ensure user exists in custom users table
-      if (data.user) {
-        const userTableResult = await updateUserTable(data.user);
-        if (!userTableResult.success) {
-          console.log('Error ensuring user in custom table:', userTableResult.error);
-          // We continue as the sign in was successful
-        }
       }
       
       return { success: true, data };
