@@ -154,29 +154,73 @@ export const CartProvider = ({ children }) => {
     }
 
     try {
-      // Start a transaction to ensure all updates go through
-      const { error: orderError } = await supabase
+      // Prepare cart items to ensure they are JSON serializable
+      // Only include necessary properties and convert to proper types
+      const cartItems = cart.map(item => ({
+        product_id: item.id,
+        name: item.name,
+        price: Number(item.price),
+        quantity: Number(item.quantity),
+        description: item.description || ''
+      }));
+      
+      console.log("Prepared cart items:", cartItems);
+      
+      // Use ISO string format for the date
+      const orderDate = new Date().toISOString();
+      
+      // Insert the order with properly formatted data
+      const { data, error: orderError } = await supabase
         .from('orders')
         .insert({
-          user_id: session.user.id,
-          order_date: new Date(),
-          total: getCartTotal(),
+          order_date: orderDate,
+          user_id: 2,
+          total: Number(getCartTotal()),
           status: 'completed',
-          items: cart
-        });
+          items: cartItems
+        })
+        .select();
 
-      if (orderError) throw orderError;
+      if (orderError) {
+        console.error('Order insert error:', orderError);
+        throw orderError;
+      }
+
+      console.log('Order created successfully:', data);
 
       // Update inventory quantities
       for (const item of cart) {
-        const { error: updateError } = await supabase
+        // Get the current quantity first
+        const { data: currentItem } = await supabase
           .from('items')
-          .update({ 
-            quantity_available: supabase.raw(`quantity_available - ${item.quantity}`) 
-          })
-          .eq('id', item.id);
-        
-        if (updateError) throw updateError;
+          .select('quantity')
+          .eq('id', item.id)
+          .single();
+          
+        if (currentItem) {
+          // Calculate new quantity
+          const newQuantity = currentItem.quantity - item.quantity;
+          
+          if (newQuantity <= 0) {
+            // If no items left, delete the item from the database
+            const { error: deleteError } = await supabase
+              .from('items')
+              .delete()
+              .eq('id', item.id);
+              
+            if (deleteError) throw deleteError;
+            console.log(`Item ${item.name} deleted as it's now out of stock`);
+          } else {
+            // Otherwise, update with the new quantity
+            const { error: updateError } = await supabase
+              .from('items')
+              .update({ quantity: newQuantity })
+              .eq('id', item.id);
+            
+            if (updateError) throw updateError;
+            console.log(`Item ${item.name} quantity updated to ${newQuantity}`);
+          }
+        }
       }
 
       // Clear the cart after successful purchase
@@ -185,7 +229,7 @@ export const CartProvider = ({ children }) => {
       return { success: true, message: 'Order completed successfully' };
     } catch (error) {
       console.error('Error completing checkout:', error);
-      return { success: false, message: 'Failed to complete your order' };
+      return { success: false, message: 'Failed to complete your order: ' + error.message };
     }
   };
 
