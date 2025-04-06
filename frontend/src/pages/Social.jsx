@@ -57,40 +57,12 @@ const Social = () => {
           content: post.caption,  // Post content
           image_url: post.image_url,
           created_at: post.created_at,  // Post creation date
-        // Fetch all posts along with user details (users table)
-        const { data: postsData, error } = await supabase
-          .from('posts')
-          .select(`
-            post_id, 
-            caption, 
-            image_url, 
-            created_at, 
-            user_id, 
-            users (id, first_name, last_name, pfp)
-          `)
-          .order('created_at', { ascending: false })  // Sorting posts by created_at in descending order
-
-        // Map the fetched data into the required format
-        const formattedPosts = postsData.map(post => ({
-          id: post.post_id,  // Post ID
-          content: post.caption,  // Post content
-          image_url: post.image_url,
-          created_at: post.created_at,  // Post creation date
           user: {
             id: post.users.id,  // User ID
             first_name: post.users.first_name,  // User first name
             last_name: post.users.last_name,  // User last name
             profile_photo: post.users.pfp || `https://ui-avatars.com/api/?name=${post.users.first_name}+${post.users.last_name}&background=random`  // User profile photo or a random one
-            id: post.users.id,  // User ID
-            first_name: post.users.first_name,  // User first name
-            last_name: post.users.last_name,  // User last name
-            profile_photo: post.users.pfp || `https://ui-avatars.com/api/?name=${post.users.first_name}+${post.users.last_name}&background=random`  // User profile photo or a random one
           }
-        }));
-
-        // Set the formatted posts to state
-        setPosts(formattedPosts);
-
         }));
 
         // Set the formatted posts to state
