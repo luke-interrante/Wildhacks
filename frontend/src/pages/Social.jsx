@@ -32,31 +32,42 @@ const Social = () => {
           setUserDetails(userData)
         }
         
-        // In a real app, we would have a posts table
-        // This is just a placeholder
-        // We'll simulate some posts for now
-        
         // Fetch all farmers
         const { data: farmers } = await supabase
           .from('users')
           .select('*')
           .eq('is_farmer', true)
         
-        // Create simulated posts for demonstration
-        const simulatedPosts = farmers.map((farmer, index) => ({
-          id: index + 1,
-          content: `Check out our latest harvest! #FarmFresh #LocalProduce`,
-          image_url: `https://source.unsplash.com/random/800x600?farm&sig=${index}`,
-          created_at: new Date(Date.now() - Math.floor(Math.random() * 1000000000)).toISOString(),
+        // Fetch all posts along with user details (users table)
+        const { data: postsData, error } = await supabase
+          .from('posts')
+          .select(`
+            post_id, 
+            caption, 
+            image_url, 
+            created_at, 
+            user_id, 
+            users (id, first_name, last_name, pfp)
+          `)
+          .order('created_at', { ascending: false })  // Sorting posts by created_at in descending order
+
+        // Map the fetched data into the required format
+        const formattedPosts = postsData.map(post => ({
+          id: post.post_id,  // Post ID
+          content: post.caption,  // Post content
+          image_url: post.image_url,
+          created_at: post.created_at,  // Post creation date
           user: {
-            id: farmer.id,
-            first_name: farmer.first_name,
-            last_name: farmer.last_name,
-            profile_photo: farmer.profile_photo || `https://ui-avatars.com/api/?name=${farmer.first_name}+${farmer.last_name}&background=random`
+            id: post.users.id,  // User ID
+            first_name: post.users.first_name,  // User first name
+            last_name: post.users.last_name,  // User last name
+            profile_photo: post.users.pfp || `https://ui-avatars.com/api/?name=${post.users.first_name}+${post.users.last_name}&background=random`  // User profile photo or a random one
           }
-        }))
-        
-        setPosts(simulatedPosts)
+        }));
+
+        // Set the formatted posts to state
+        setPosts(formattedPosts);
+
       } catch (error) {
         console.error('Error fetching social posts:', error)
         setError('Failed to load community posts')
