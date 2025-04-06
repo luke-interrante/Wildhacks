@@ -104,30 +104,30 @@ const Profile = () => {
   
   const handleAddItem = async (e) => {
     e.preventDefault()
-    
+  
     try {
       if (!userDetails?.is_farmer) {
         alert('Only farmers can add items')
         return
       }
-      
+  
       const newItemData = {
         ...newItem,
         farmer_id: userDetails.id,
         price: parseFloat(newItem.price),
         quantity: parseInt(newItem.quantity, 10)
       }
-      
+  
       const { data, error } = await supabase
         .from('items')
         .insert([newItemData])
         .select()
-      
+  
       if (error) throw error
-      
+  
       // Add the new item to the state
       setFarmerItems(prev => [...prev, data[0]])
-      
+  
       // Reset form
       setNewItem({
         name: '',
@@ -135,7 +135,7 @@ const Profile = () => {
         price: '',
         quantity: ''
       })
-      
+  
       alert('Item added successfully!')
     } catch (error) {
       console.error('Error adding item:', error)
@@ -204,7 +204,7 @@ const Profile = () => {
   if (!userDetails) return <div>Please log in to view your profile</div>
   
   return (
-    <div className="profile-container">
+    <div className="profile-container" style={{width: '100%'}}>
       <div className="profile-header">
         <div className="profile-photo">
           {userDetails.profile_photo ? (
@@ -245,9 +245,9 @@ const Profile = () => {
         </button>
       </div>
       
-      <div className="profile-content mx-auto">
+      <div className="profile-content">
         {activeTab === 'profile' && (
-          <div className="profile-edit">
+          <div className="profile-edit w-full max-w-md">
             <div className='flex justify-between'>
               <p className='text-xl'> <strong>My Profile</strong> </p>
               <button className="primary-btn">Edit Profile</button>
