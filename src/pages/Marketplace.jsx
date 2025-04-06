@@ -176,7 +176,7 @@ const Marketplace = () => {
             items.map(item => (
               <div className="product-card" key={item.id}>
                 <div className="product-image" onClick={() => openProductModal(item)}>
-                  {/* Placeholder for product image */}
+                  <img src={item.image_url} alt={item.name} />
                   <div className="image-placeholder"></div>
                 </div>
                 <div className="product-info">
