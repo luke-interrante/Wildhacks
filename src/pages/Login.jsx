@@ -33,7 +33,7 @@ const Login = () => {
   return (
     <div className="auth-container">
       <div className="auth-form-container">
-        <h1>Login</h1>
+        <h1><b>Welcome in,</b></h1>
         
         {error && <div className="error-message">{error}</div>}
         
@@ -61,12 +61,12 @@ const Login = () => {
           </div>
           
           <button type="submit" className="auth-button">
-            Login
+            Log in
           </button>
         </form>
         
         <div className="auth-switch">
-          <p>Need an account? <Link to="/signup">Sign Up</Link></p>
+          <p>Need an account? <Link to="/signup"><b>Sign Up</b></Link></p>
         </div>
       </div>
     </div>

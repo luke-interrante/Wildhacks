@@ -1,0 +1,102 @@
+/* light theme greens */
+:root, .light, .light-theme {
+  --green-1: #fbfefb;
+  --green-2: #f5fbf6;
+  --green-3: #e8f7e9;
+  --green-4: #daf0db;
+  --green-5: #c8e9cb;
+  --green-6: #b2deb6;
+  --green-7: #94ce9a;
+  --green-8: #67b973;
+  --green-9: #2a7e3b;
+  --green-10: #17702d;
+  --green-11: #2a7e3b;
+  --green-12: #213c24;
+
+  --green-contrast: #fff;
+  --green-surface: #f3faf4cc;
+  --green-indicator: #2a7e3b;
+  --green-track: #2a7e3b;
+}
+
+
+/* light theme grays */
+:root, .light, .light-theme {
+  --gray-1: #fcfcfd;
+  --gray-2: #f9f9fb;
+  --gray-3: #eff0f3;
+  --gray-4: #e7e8ec;
+  --gray-5: #e0e1e6;
+  --gray-6: #d8d9e0;
+  --gray-7: #cdced7;
+  --gray-8: #b9bbc6;
+  --gray-9: #8b8d98;
+  --gray-10: #80828d;
+  --gray-11: #62636c;
+  --gray-12: #1e1f24;
+
+  --gray-contrast: #FFFFFF;
+  --gray-surface: #ffffffcc;
+  --gray-indicator: #8b8d98;
+  --gray-track: #8b8d98;
+}
+
+/* light theme background */
+:root, .light, .light-theme, .radix-themes {
+  --color-background: #fff;
+}
+
+/**********************************************************************
+
+/* dark theme greens */
+.dark, .dark-theme {
+  --green-1: #19221a;
+  --green-2: #1d261e;
+  --green-3: #223524;
+  --green-4: #1f4525;
+  --green-5: #24522b;
+  --green-6: #286031;
+  --green-7: #2b6f38;
+  --green-8: #2d813e;
+  --green-9: #2a7e3b;
+  --green-10: #296d36;
+  --green-11: #7cce86;
+  --green-12: #b3f5ba;
+
+  --green-contrast: #fff;
+  --green-surface: #1c2d1e80;
+  --green-indicator: #2a7e3b;
+  --green-track: #2a7e3b;
+}
+
+/* dark theme grays */
+.dark, .dark-theme {
+  --gray-1: #1e1f21;
+  --gray-2: #262628;
+  --gray-3: #2e2e31;
+  --gray-4: #343439;
+  --gray-5: #3a3b40;
+  --gray-6: #414348;
+  --gray-7: #4d4f56;
+  --gray-8: #656670;
+  --gray-9: #71737d;
+  --gray-10: #7d7e89;
+  --gray-11: #b3b5bf;
+  --gray-12: #eeeef0;
+
+  --gray-contrast: #FFFFFF;
+  --gray-surface: rgba(0, 0, 0, 0.05);
+  --gray-indicator: #71737d;
+  --gray-track: #71737d;
+}
+
+/* dark theme background */
+.dark, .dark-theme, :is(.dark, .dark-theme) :where(.radix-themes:not(.light, .light-theme)) {
+  --color-background: #1f1f1f;
+}
+
+/*
+.dark, .dark-theme, :is(.dark, .dark-theme) :where(.radix-themes:not(.light, .light-theme)) {
+  --color-background: #111;
+}
+*/

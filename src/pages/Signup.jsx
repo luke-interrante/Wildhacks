@@ -37,7 +37,8 @@ const Signup = () => {
   return (
     <div className="auth-container">
       <div className="auth-form-container">
-        <h1>Create Account</h1>
+        <h1><b><i>Nice to Meet You,</i></b></h1>
+        <h2>Create an account</h2>
         
         {error && <div className="error-message">{error}</div>}
         
@@ -111,7 +112,7 @@ const Signup = () => {
         </form>
         
         <div className="auth-switch">
-          <p>Already have an account? <Link to="/login">Login</Link></p>
+          <p>Already have an account? <Link to="/login"><b>Log in</b></Link></p>
         </div>
       </div>
     </div>
