@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import supabase from '../util/supabaseClient.js'
+import supabase, { supabaseUrl } from '../util/supabaseClient.js'
+import { v4 as uuidv4 } from 'uuid'
 
 const Profile = () => {
   const navigate = useNavigate()
@@ -11,8 +12,19 @@ const Profile = () => {
   const [farmerItems, setFarmerItems] = useState([])
   const [activeTab, setActiveTab] = useState('profile')
 
-  const [newItem, setNewItem] = useState({ name: '', description: '', price: '', quantity: '' })
-  const [editedProfile, setEditedProfile] = useState({ first_name: '', last_name: '', phone_number: '', profile_photo: '' })
+  const [newItem, setNewItem] = useState({
+    name: '',
+    description: '',
+    image_url: '',
+    price: '',
+    quantity: ''
+  })
+  const [editedProfile, setEditedProfile] = useState({
+    first_name: '',
+    last_name: '',
+    phone_num: '',
+    pfp: ''
+  })
 
   // Edit modal state
   const [editingItem, setEditingItem] = useState(null)
@@ -44,8 +56,8 @@ const Profile = () => {
         setEditedProfile({
           first_name: userData.first_name,
           last_name: userData.last_name,
-          phone_number: userData.phone_number || '',
-          profile_photo: userData.profile_photo || ''
+          phone_num: userData.phone_num || '',
+          pfp: userData.pfp || ''
         })
 
         if (userData.is_farmer) {
@@ -70,8 +82,36 @@ const Profile = () => {
 
   const handleAddItem = async (e) => {
     e.preventDefault()
+
     try {
       if (!userDetails?.is_farmer) return alert('Only farmers can add items')
+
+      if (!newItem.image_url) {
+        alert('Please select an image file')
+        return
+      }
+
+      // Upload image to Supabase Storage
+      const file_name = `${uuidv4()}.${newItem.image_url.name.split('.').pop()}`
+      console.log('** file name:', file_name)
+      
+      console.log('attempting to upload file to supabase storage')
+
+      const { upload_data, error: uploadError } = await supabase
+        .storage
+        .from('farmers-place')  // bucket name
+        .upload(`product-images/${file_name}`, newItem.image_url)  // file path, file
+
+      if (uploadError) {
+        throw new Error(uploadError.message)
+      }
+
+      console.log('file uploaded successfully:')
+
+      const publicURL = `${supabaseUrl}/storage/v1/object/public/farmers-place/product-images/${file_name}`
+      console.log('public URL:', publicURL)
+
+      newItem.image_url = publicURL
 
       const newItemData = {
         ...newItem,
@@ -80,11 +120,22 @@ const Profile = () => {
         quantity: parseInt(newItem.quantity, 10)
       }
 
+      // Insert new item into the database
       const { data, error } = await supabase.from('items').insert([newItemData]).select()
       if (error) throw error
 
+      // Update local state with the new item
       setFarmerItems(prev => [...prev, data[0]])
-      setNewItem({ name: '', description: '', price: '', quantity: '' })
+
+      // Reset the form
+      setNewItem({
+        name: '',
+        description: '',
+        image_url: '',
+        price: '',
+        quantity: ''
+      })
+      
       alert('Item added successfully!')
     } catch (error) {
       console.error('Error adding item:', error)
@@ -95,6 +146,18 @@ const Profile = () => {
   const handleItemChange = (e) => {
     const { name, value } = e.target
     setNewItem(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleFileChange = (e) => {
+    const { name, files } = e.target
+
+    // TODO: delete console.logs
+    console.log('** Just added file!')
+    console.log('** file:', files[0])
+    console.log('** file name:', files[0].name)
+
+    const file = files[0]
+    setNewItem(prev => ({ ...prev, [name]: file }))
   }
 
   const handleProfileChange = (e) => {
@@ -228,22 +291,48 @@ const Profile = () => {
             <form onSubmit={updateProfile}>
               <div className="form-group">
                 <label htmlFor="first_name">First Name</label>
-                <input type="text" id="first_name" name="first_name" value={editedProfile.first_name} onChange={handleProfileChange} required />
+                <input
+                  type="text"
+                  id="first_name"
+                  name="first_name"
+                  value={editedProfile.first_name}
+                  onChange={handleProfileChange}
+                  required
+                />
               </div>
 
               <div className="form-group">
                 <label htmlFor="last_name">Last Name</label>
-                <input type="text" id="last_name" name="last_name" value={editedProfile.last_name} onChange={handleProfileChange} required />
+                <input
+                  type="text"
+                  id="last_name"
+                  name="last_name"
+                  value={editedProfile.last_name}
+                  onChange={handleProfileChange}
+                  required
+                />
               </div>
 
               <div className="form-group">
-                <label htmlFor="phone_number">Phone</label>
-                <input type="tel" id="phone_number" name="phone_number" value={editedProfile.phone_number} onChange={handleProfileChange} />
+                <label htmlFor="phone_num">Phone</label>
+                <input
+                  type="tel"
+                  id="phone_num"
+                  name="phone_num"
+                  value={editedProfile.phone_num}
+                  onChange={handleProfileChange}
+                />
               </div>
 
               <div className="form-group">
                 <label htmlFor="profile_photo">Profile Photo URL</label>
-                <input type="text" id="profile_photo" name="profile_photo" value={editedProfile.profile_photo} onChange={handleProfileChange} />
+                <input
+                  type="text"
+                  id="profile_photo"
+                  name="profile_photo"
+                  value={editedProfile.pfp}
+                  onChange={handleProfileChange}
+                />
               </div>
 
               <button type="submit" className="update-profile-btn">Update Profile</button>
@@ -260,23 +349,64 @@ const Profile = () => {
               <form onSubmit={handleAddItem}>
                 <div className="form-group">
                   <label htmlFor="name">Product Name</label>
-                  <input type="text" id="name" name="name" value={newItem.name} onChange={handleItemChange} required />
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={newItem.name}
+                    onChange={handleItemChange}
+                    required
+                  />
                 </div>
 
                 <div className="form-group">
                   <label htmlFor="description">Description</label>
-                  <textarea id="description" name="description" value={newItem.description} onChange={handleItemChange} required />
+                  <textarea
+                    id="description"
+                    name="description"
+                    value={newItem.description}
+                    onChange={handleItemChange}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="image_file">Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    id="image_file"
+                    name="image_url"
+                    onChange={handleFileChange}
+                  />
                 </div>
 
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="price">Price ($)</label>
-                    <input type="number" id="price" name="price" min="0" step="0.01" value={newItem.price} onChange={handleItemChange} required />
+                    <input
+                      type="number"
+                      id="price"
+                      name="price"
+                      min="0"
+                      step="0.01"
+                      value={newItem.price}
+                      onChange={handleItemChange}
+                      required
+                    />
                   </div>
 
                   <div className="form-group">
                     <label htmlFor="quantity">Quantity</label>
-                    <input type="number" id="quantity" name="quantity" min="1" value={newItem.quantity} onChange={handleItemChange} required />
+                    <input
+                      type="number"
+                      id="quantity"
+                      name="quantity"
+                      min="1"
+                      value={newItem.quantity}
+                      onChange={handleItemChange}
+                      required
+                    />
                   </div>
                 </div>
 
@@ -325,22 +455,52 @@ const Profile = () => {
             <form onSubmit={handleEditItem}>
               <div className="form-group">
                 <label>Product Name</label>
-                <input type="text" name="name" value={editingItem.name} onChange={handleEditChange} required />
+                <input
+                  type="text"
+                  name="name"
+                  value={editingItem.name}
+                  onChange={handleEditChange}
+                  required
+                />
               </div>
+
               <div className="form-group">
                 <label>Description</label>
-                <textarea name="description" value={editingItem.description} onChange={handleEditChange} required />
+                <textarea
+                  name="description"
+                  value={editingItem.description}
+                  onChange={handleEditChange}
+                  required
+                />
               </div>
+
               <div className="form-row">
                 <div className="form-group">
                   <label>Price</label>
-                  <input type="number" name="price" step="0.01" min="0" value={editingItem.price} onChange={handleEditChange} required />
+                  <input
+                    type="number"
+                    name="price"
+                    step="0.01"
+                    min="0"
+                    value={editingItem.price}
+                    onChange={handleEditChange}
+                    required
+                  />
                 </div>
+
                 <div className="form-group">
                   <label>Quantity</label>
-                  <input type="number" name="quantity" min="1" value={editingItem.quantity} onChange={handleEditChange} required />
+                  <input
+                    type="number"
+                    name="quantity"
+                    min="1"
+                    value={editingItem.quantity}
+                    onChange={handleEditChange}
+                    required
+                  />
                 </div>
               </div>
+
               <div className="modal-actions">
                 <button type="submit" className="save-btn">Save</button>
                 <button type="button" className="cancel-btn" onClick={() => setEditModalOpen(false)}>Cancel</button>
