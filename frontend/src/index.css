@@ -1,3 +1,4 @@
+@import "tailwindcss";
 /* CSS reset and global styles */
 * {
   box-sizing: border-box;
