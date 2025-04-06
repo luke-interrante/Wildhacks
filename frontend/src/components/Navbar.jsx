@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
   const { isAuthenticated, userDetails, signOut } = useAuth();
@@ -37,9 +38,13 @@ const Navbar = () => {
         ) : (
           <Link to="/login" className="nav-link">Login</Link>
         )}
+
+        <div className="nav-theme-toggle">
+          <ThemeToggle /> {/* Add the ThemeToggle button here */}
+        </div>
       </div>
     </nav>
-  )
+  );
 }
 
 export default Navbar 

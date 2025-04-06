@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import './colors.css'
 import './App.css'
 
 // Pages
