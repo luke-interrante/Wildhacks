@@ -169,7 +169,7 @@ button {
   background-color: #f5f5f5;
   color: var(--text-color);
   /* font-size: 15.5px; */
-  scale:1.05;
+  scale: 1.05;
 }
 
 /* Home page */
@@ -346,7 +346,7 @@ button {
 
 .add-to-cart-btn {
   background-color: var(--primary-color);
-  color: white;
+  color: --accent-background-color;
   flex: 1;
 }
 
@@ -355,7 +355,7 @@ button {
 }
 
 .view-details-btn {
-  background-color: white;
+  background-color: --accent-background-color;
   color: var(--primary-color);
   border: 1px solid var(--primary-color);
   flex: 1;
@@ -408,8 +408,8 @@ button {
 }
 
 .form-group input {
-  background-color: white;
-  color: black;
+  background-color: --accent-background-color;
+  color: --text-color;
 }
 
 .form-group input, .form-group textarea {
@@ -436,7 +436,7 @@ button {
 
 .auth-button, .update-profile-btn, .add-item-btn, .post-btn {
   background-color: var(--primary-color);
-  color: white;
+  color: --primary-btn;
   padding: var(--spacing-md);
   width: 100%;
   font-size: 1rem;
@@ -481,7 +481,7 @@ button {
 
 /* Profile */
 .profile-container {
-  background-color: white;
+  background-color: --accent-background-color;
   border-radius: var(--radius);
   box-shadow: var(--card-shadow);
   overflow: hidden;
@@ -528,9 +528,13 @@ button {
 }
 
 .sign-out-btn {
-  background-color: #f5f5f5;
+  background-color: var(--secondary-btn);
   color: var(--text-color);
   padding: var(--spacing-xs) var(--spacing-md);
+}
+
+.sign-out-btn:hover {
+  scale: 1.05; 
 }
 
 .profile-tabs {
@@ -544,6 +548,11 @@ button {
   border-radius: 0;
   color: var(--text-color);
   border-bottom: 2px solid transparent;
+}
+
+.tab-btn:hover {
+  color: var(--primary-color);
+  border-bottom: 2px solid var(--primary-color);
 }
 
 .tab-btn.active {
@@ -572,12 +581,12 @@ button {
 
 .edit-item-btn {
   background-color: var(--primary-color);
-  color: white;
+  color: --primary-btn;
 }
 
 .delete-item-btn {
   background-color: #f44336;
-  color: white;
+  color: --secondary-color;
 }
 
 /* Social */
@@ -589,7 +598,7 @@ button {
 }
 
 .new-post-form {
-  background-color: white;
+  background-color: --background-color;
   border-radius: var(--radius);
   box-shadow: var(--card-shadow);
   padding: var(--spacing-lg);
@@ -597,7 +606,7 @@ button {
 }
 
 .post-card {
-  background-color: white;
+  background-color: --accent-background-color;
   border-radius: var(--radius);
   box-shadow: var(--card-shadow);
   overflow: hidden;
@@ -765,12 +774,16 @@ button {
   cursor: pointer;
 }
 
+.cart-icon:hover {
+  scale: 1.1;
+}
+
 .cart-count {
   position: absolute;
   top: -8px;
   right: -8px;
   background-color: #e74c3c;
-  color: white;
+  color: --text-color;
   border-radius: 50%;
   width: 20px;
   height: 20px;
@@ -892,7 +905,7 @@ button {
   width: 100%;
   padding: 12px;
   background-color: #27ae60;
-  color: white;
+  color: --primary-btn;
   border: none;
   border-radius: 4px;
   font-weight: 500;
@@ -919,7 +932,7 @@ button {
 }
 
 .product-modal {
-  background-color: white;
+  background-color: --accent-background-color;
   width: 90%;
   max-width: 900px;
   border-radius: 8px;
@@ -1171,7 +1184,7 @@ button {
 .place-order {
   padding: 12px 24px;
   background-color: #27ae60;
-  color: white;
+  color: --primary-btn;
   border: none;
   border-radius: 4px;
   font-weight: 500;
@@ -1207,7 +1220,7 @@ button {
 .warning-message {
   padding: 12px;
   background-color: #f2ff91;
-  color: black;
+  color: --text-color;
   border-radius: 4px;
   margin-bottom: 16px;
   text-align: center;
