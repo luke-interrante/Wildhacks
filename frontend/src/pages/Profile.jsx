@@ -104,30 +104,30 @@ const Profile = () => {
   
   const handleAddItem = async (e) => {
     e.preventDefault()
-    
+  
     try {
       if (!userDetails?.is_farmer) {
         alert('Only farmers can add items')
         return
       }
-      
+  
       const newItemData = {
         ...newItem,
         farmer_id: userDetails.id,
         price: parseFloat(newItem.price),
         quantity: parseInt(newItem.quantity, 10)
       }
-      
+  
       const { data, error } = await supabase
         .from('items')
         .insert([newItemData])
         .select()
-      
+  
       if (error) throw error
-      
+  
       // Add the new item to the state
       setFarmerItems(prev => [...prev, data[0]])
-      
+  
       // Reset form
       setNewItem({
         name: '',
@@ -135,7 +135,7 @@ const Profile = () => {
         price: '',
         quantity: ''
       })
-      
+  
       alert('Item added successfully!')
     } catch (error) {
       console.error('Error adding item:', error)

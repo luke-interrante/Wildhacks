@@ -32,31 +32,42 @@ const Social = () => {
           setUserDetails(userData)
         }
         
-        // In a real app, we would have a posts table
-        // This is just a placeholder
-        // We'll simulate some posts for now
-        
         // Fetch all farmers
         const { data: farmers } = await supabase
           .from('users')
           .select('*')
           .eq('is_farmer', true)
         
-        // Create simulated posts for demonstration
-        const simulatedPosts = farmers.map((farmer, index) => ({
-          id: index + 1,
-          content: `Check out our latest harvest! #FarmFresh #LocalProduce`,
-          image_url: `https://source.unsplash.com/random/800x600?farm&sig=${index}`,
-          created_at: new Date(Date.now() - Math.floor(Math.random() * 1000000000)).toISOString(),
+        // Fetch all posts along with user details (users table)
+        const { data: postsData, error } = await supabase
+          .from('posts')
+          .select(`
+            post_id, 
+            caption, 
+            image_url, 
+            created_at, 
+            user_id, 
+            users (id, first_name, last_name, pfp)
+          `)
+          .order('created_at', { ascending: false })  // Sorting posts by created_at in descending order
+
+        // Map the fetched data into the required format
+        const formattedPosts = postsData.map(post => ({
+          id: post.post_id,  // Post ID
+          content: post.caption,  // Post content
+          image_url: post.image_url,
+          created_at: post.created_at,  // Post creation date
           user: {
-            id: farmer.id,
-            first_name: farmer.first_name,
-            last_name: farmer.last_name,
-            profile_photo: farmer.profile_photo || `https://ui-avatars.com/api/?name=${farmer.first_name}+${farmer.last_name}&background=random`
+            id: post.users.id,  // User ID
+            first_name: post.users.first_name,  // User first name
+            last_name: post.users.last_name,  // User last name
+            profile_photo: post.users.pfp || `https://ui-avatars.com/api/?name=${post.users.first_name}+${post.users.last_name}&background=random`  // User profile photo or a random one
           }
-        }))
-        
-        setPosts(simulatedPosts)
+        }));
+
+        // Set the formatted posts to state
+        setPosts(formattedPosts);
+
       } catch (error) {
         console.error('Error fetching social posts:', error)
         setError('Failed to load community posts')
@@ -76,38 +87,63 @@ const Social = () => {
     }))
   }
   
-  const handleAddPost = (e) => {
-    e.preventDefault()
-    
+  const handleAddPost = async (e) => {
+    e.preventDefault();
+  
     if (!userDetails?.is_farmer) {
-      alert('Only farmers can create posts')
-      return
+      alert('Only farmers can create posts');
+      return;
     }
-    
-    // In a real app, we would insert into a posts table
-    // For now, we'll just add to the local state
-    
-    const newPostObject = {
-      id: posts.length + 1,
-      content: newPost.content,
-      image_url: newPost.image_url || `https://source.unsplash.com/random/800x600?farm&sig=${posts.length}`,
-      created_at: new Date().toISOString(),
-      user: {
-        id: userDetails.id,
-        first_name: userDetails.first_name,
-        last_name: userDetails.last_name,
-        profile_photo: userDetails.profile_photo || `https://ui-avatars.com/api/?name=${userDetails.first_name}+${userDetails.last_name}&background=random`
+  
+    try {
+      // Step 1: Insert the new post into Supabase
+      const { error, status } = await supabase
+        .from('posts')
+        .insert([
+          {
+            user_id: userDetails.id,
+            caption: newPost.content,
+            image_url: newPost.image_url || null,
+            created_at: new Date(),
+          }
+        ]);
+  
+      console.log('Supabase insert status:', { error, status });
+  
+      if (error) {
+        throw new Error(error.message); // Log detailed error message if it exists
       }
+  
+      // Step 2: Manually construct the new post object
+      const newPostObject = {
+        id: Date.now(),  // Use a temporary unique id (you can change this later)
+        content: newPost.content,
+        image_url: newPost.image_url || null,
+        created_at: new Date().toISOString(), // Assign the created_at timestamp manually
+        user: {
+          id: userDetails.id,
+          first_name: userDetails.first_name,
+          last_name: userDetails.last_name,
+          profile_photo: userDetails.profile_photo || `https://ui-avatars.com/api/?name=${userDetails.first_name}+${userDetails.last_name}&background=random`
+        }
+      };
+  
+      console.log('New post object:', newPostObject); // Log the new post object
+  
+      // Step 3: Update local state with the new post
+      setPosts([newPostObject, ...posts]);
+  
+      // Step 4: Reset the new post form
+      setNewPost({
+        content: '',
+        image_url: ''
+      });
+    } catch (error) {
+      console.error('Error adding post:', error);
+      alert('Failed to create post: ' + error.message);
     }
-    
-    setPosts([newPostObject, ...posts])
-    
-    // Reset form
-    setNewPost({
-      content: '',
-      image_url: ''
-    })
-  }
+  };
+  
   
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' }
