@@ -1,70 +1,38 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import supabase from '../util/supabaseClient.js'
 import CustomCheckbox from '../components/Checkbox.jsx'
-import { useAuth } from '../context/AuthContext.jsx'
+import { UserAuth } from '../context/AuthContext.jsx'
 
 const Signup = () => {
   const [email, setEmail] = useState('')
-  const [pass, setPass] = useState('')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [isFarmer, setIsFarmer] = useState(false)
   const [phone, setPhone] = useState('')
-
-  const { session, signUpNewUser } = useAuth();
-  console.log(session);
-
-  const navigate = useNavigate()
-  const { isAuthenticated } = useAuth()
   
-  // Redirect if already logged in
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/')
-    }
-  }, [isAuthenticated, navigate])
+  const { signUpNewUser } = UserAuth()
+  const navigate = useNavigate();
 
-  const handleSignup = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    setLoading(true);
     try {
-      // Handle sign up
-      const { error: authError } = await supabase.auth.signUp({
-        email,
-        password: pass,
-      })
+      const result = await signUpNewUser(email, password, firstName, lastName, isFarmer, phone);
 
-      if (authError) throw authError
-
-      // Insert into users table
-      const { error: userError } = await supabase
-        .from('users')
-        .insert([
-          { 
-            email: email,
-            first_name: firstName,
-            last_name: lastName,
-            is_farmer: isFarmer,
-            phone_num: phone,
-            created_at: new Date(),
-          }
-        ])
-
-      if (userError) throw userError
-      
-      alert('Sign up successful! Please check your email for verification.')
-      navigate('/login')
-    } catch (error) {
-      setError(error.message)
+      if (result.success) {
+        navigate('/home')
+      } else {
+        setError(result.error.message);
+      }
+    } catch (err) {
+      setError('an error occured', err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="auth-container">
@@ -73,13 +41,13 @@ const Signup = () => {
         
         {error && <div className="error-message">{error}</div>}
         
-        <form onSubmit={handleSignup}>
+        <form onSubmit={handleSignUp}>
           <div className="form-group">
             <label htmlFor="firstName">First Name</label>
             <input
               type="text"
               id="firstName"
-              value={firstName}
+              placeholder="John"
               onChange={(e) => setFirstName(e.target.value)}
               required
             />
@@ -90,7 +58,7 @@ const Signup = () => {
             <input
               type="text"
               id="lastName"
-              value={lastName}
+              placeholder='Doe'
               onChange={(e) => setLastName(e.target.value)}
               required
             />
@@ -101,7 +69,7 @@ const Signup = () => {
             <input
               type="tel"
               id="phone"
-              value={phone}
+              placeholder='777-777-7777'
               onChange={(e) => setPhone(e.target.value)}
             />
           </div>
@@ -109,8 +77,7 @@ const Signup = () => {
           <div className="form-group">
             <CustomCheckbox 
               id="isFarmer"
-              checked={isFarmer}
-              onChange={setIsFarmer}
+              onChange={() => setIsFarmer(!isFarmer)}
               label="I am a farmer"
             />
           </div>
@@ -120,7 +87,7 @@ const Signup = () => {
             <input
               type="email"
               id="email"
-              value={email}
+              placeholder='johndoe@gmail.com'
               onChange={(e) => setEmail(e.target.value)}
               required
             />
@@ -131,8 +98,8 @@ const Signup = () => {
             <input
               type="password"
               id="password"
-              value={pass}
-              onChange={(e) => setPass(e.target.value)}
+              placeholder='supersecretpassword'
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
@@ -140,6 +107,7 @@ const Signup = () => {
           <button type="submit" className="auth-button" disabled={loading}>
             {loading ? 'Processing...' : 'Sign Up'}
           </button>
+          {error && <p className="text-red-600 text-center pt-4">{error}</p>}
         </form>
         
         <div className="auth-switch">

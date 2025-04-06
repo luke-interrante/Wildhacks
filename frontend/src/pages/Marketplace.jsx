@@ -90,7 +90,7 @@ const Marketplace = () => {
   }
   
   return (
-    <div className="marketplace-container">
+    <div className="marketplace-container app-container">
       <h1>Farmer's Marketplace</h1>
       
       <div className="marketplace-filters">
