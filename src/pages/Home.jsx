@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import supabase from '../util/supabaseClient.js'
 import ProductModal from '../components/ProductModal.jsx'
 import { useCart } from '../context/CartContext.jsx'
+import { UserAuth } from '../context/AuthContext.jsx'
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([])
@@ -12,6 +13,8 @@ const Home = () => {
   const [farmers, setFarmers] = useState({})
   const [selectedItem, setSelectedItem] = useState(null)
   const [successMessage, setSuccessMessage] = useState('')
+  const [warningItemId, setWarningItemId] = useState(null)
+  const { session } = UserAuth();
   const { addToCart } = useCart()
 
   useEffect(() => {
@@ -80,6 +83,9 @@ const Home = () => {
     if (result.success === true) {
       setSuccessMessage('Added to cart!')
       setTimeout(() => setSuccessMessage(''), 3000)
+    } else if (result.success === null) {
+      setWarningItemId(item.id)
+      setTimeout(() => setWarningItemId(null), 3000)
     }
   }
 
@@ -100,9 +106,16 @@ const Home = () => {
           <Link to="/marketplace">
           <button className="primary-btn">Browse Marketplace</button>
           </Link>
-          <Link to="/signup">
-            <button className="secondary-btn">Join Community</button>
-          </Link>
+          { !session && (
+            <Link to="/signup">
+              <button className="secondary-btn">Join Community</button>
+            </Link>
+          )}
+          { session && (
+            <Link to="/social">
+              <button className="secondary-btn">View Farmer Posts</button>
+            </Link>
+          )}
         </div>
       </section>
       
@@ -124,9 +137,13 @@ const Home = () => {
               featuredProducts.map(item => (
                 <div className="product-card" key={item.id}>
                   <div className="product-image">
+                    <img src={item.image_url} alt={item.name} />
                     <div className="image-placeholder"></div>
                   </div>
                   <div className="product-info">
+                    {warningItemId === item.id && (
+                      <div className="warning-message">You must be logged in to add items to cart.</div>
+                    )}
                     <h3 className='cursor-pointer' onClick={() => openProductModal(item)}>{item.name}</h3>
                     <p className="product-price">${(item.price).toFixed(2)}</p>
                     {item.farmer_id && farmers[item.farmer_id] && (
