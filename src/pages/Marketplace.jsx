@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import supabase from '../util/supabaseClient.js'
+import ProductModal from '../components/ProductModal.jsx'
+import { useCart } from '../context/CartContext.jsx'
+import { UserAuth } from '../context/AuthContext.jsx'
 
 const Marketplace = () => {
   const [items, setItems] = useState([])
@@ -12,6 +16,21 @@ const Marketplace = () => {
     category: ''
   })
   const [farmers, setFarmers] = useState({})
+  const [selectedItem, setSelectedItem] = useState(null)
+  const [successMessage, setSuccessMessage] = useState('')
+  const [warningMessage, setWarningMessage] = useState('');
+  const { addToCart } = useCart()
+  const location = useLocation()
+
+  useEffect(() => {
+    // Check for success message from checkout
+    if (location.state?.success) {
+      setSuccessMessage(location.state.message)
+      setTimeout(() => setSuccessMessage(''), 5000)
+      // Clear the location state
+      window.history.replaceState({}, document.title)
+    }
+  }, [location])
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -84,14 +103,39 @@ const Marketplace = () => {
     }))
   }
   
-  const handleAddToCart = (item) => {
-    // To be implemented - Add to cart functionality
-    console.log('Added to cart:', item)
+  const handleAddToCart = async (item) => {
+    const result = await addToCart(item, 1)
+    if (result.success === false) {
+      setError(result.message)
+      setTimeout(() => setError(null), 3000)
+    } else if (result.success === null) {
+      setWarningMessage(result.message)
+      setTimeout(() => setWarningMessage(''), 3000)
+    } else {
+      setSuccessMessage('Added to cart!')
+      setTimeout(() => setSuccessMessage(''), 3000)
+    }
+  }
+
+  const openProductModal = (item) => {
+    setSelectedItem(item)
+  }
+  
+  const closeProductModal = () => {
+    setSelectedItem(null)
   }
   
   return (
     <div className="marketplace-container app-container">
       <h1>Farmer's Marketplace</h1>
+      
+      {successMessage && (
+        <div className="success-message">{successMessage}</div>
+      )}
+
+      { warningMessage && (
+        <div className="warning-message">{warningMessage}</div>
+      )}
       
       <div className="marketplace-filters">
         <input
@@ -131,12 +175,12 @@ const Marketplace = () => {
           ) : (
             items.map(item => (
               <div className="product-card" key={item.id}>
-                <div className="product-image">
+                <div className="product-image" onClick={() => openProductModal(item)}>
                   {/* Placeholder for product image */}
                   <div className="image-placeholder"></div>
                 </div>
                 <div className="product-info">
-                  <h3>{item.name}</h3>
+                  <h3 onClick={() => openProductModal(item)}>{item.name}</h3>
                   <p className="product-price">${(item.price).toFixed(2)}</p>
                   {item.farmer_id && farmers[item.farmer_id] && (
                     <p className="product-farmer">
@@ -151,13 +195,26 @@ const Marketplace = () => {
                     >
                       Add to Cart
                     </button>
-                    <button className="view-details-btn">View Details</button>
+                    <button 
+                      className="view-details-btn"
+                      onClick={() => openProductModal(item)}
+                    >
+                      View Details
+                    </button>
                   </div>
                 </div>
               </div>
             ))
           )}
         </div>
+      )}
+      
+      {selectedItem && (
+        <ProductModal 
+          item={selectedItem} 
+          farmer={selectedItem.farmer_id ? farmers[selectedItem.farmer_id] : null} 
+          onClose={closeProductModal} 
+        />
       )}
     </div>
   )
