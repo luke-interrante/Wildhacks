@@ -228,22 +228,48 @@ const Profile = () => {
             <form onSubmit={updateProfile}>
               <div className="form-group">
                 <label htmlFor="first_name">First Name</label>
-                <input type="text" id="first_name" name="first_name" value={editedProfile.first_name} onChange={handleProfileChange} required />
+                <input
+                  type="text"
+                  id="first_name"
+                  name="first_name"
+                  value={editedProfile.first_name}
+                  onChange={handleProfileChange}
+                  required
+                />
               </div>
 
               <div className="form-group">
                 <label htmlFor="last_name">Last Name</label>
-                <input type="text" id="last_name" name="last_name" value={editedProfile.last_name} onChange={handleProfileChange} required />
+                <input
+                  type="text"
+                  id="last_name"
+                  name="last_name"
+                  value={editedProfile.last_name}
+                  onChange={handleProfileChange}
+                  required
+                />
               </div>
 
               <div className="form-group">
                 <label htmlFor="phone_number">Phone</label>
-                <input type="tel" id="phone_number" name="phone_number" value={editedProfile.phone_number} onChange={handleProfileChange} />
+                <input
+                  type="tel"
+                  id="phone_number"
+                  name="phone_number"
+                  value={editedProfile.phone_number}
+                  onChange={handleProfileChange}
+                />
               </div>
 
               <div className="form-group">
                 <label htmlFor="profile_photo">Profile Photo URL</label>
-                <input type="text" id="profile_photo" name="profile_photo" value={editedProfile.profile_photo} onChange={handleProfileChange} />
+                <input
+                  type="text"
+                  id="profile_photo"
+                  name="profile_photo"
+                  value={editedProfile.profile_photo}
+                  onChange={handleProfileChange}
+                />
               </div>
 
               <button type="submit" className="update-profile-btn">Update Profile</button>
@@ -260,23 +286,53 @@ const Profile = () => {
               <form onSubmit={handleAddItem}>
                 <div className="form-group">
                   <label htmlFor="name">Product Name</label>
-                  <input type="text" id="name" name="name" value={newItem.name} onChange={handleItemChange} required />
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value={newItem.name}
+                    onChange={handleItemChange}
+                    required
+                  />
                 </div>
 
                 <div className="form-group">
                   <label htmlFor="description">Description</label>
-                  <textarea id="description" name="description" value={newItem.description} onChange={handleItemChange} required />
+                  <textarea
+                    id="description"
+                    name="description"
+                    value={newItem.description}
+                    onChange={handleItemChange}
+                    required
+                  />
                 </div>
 
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="price">Price ($)</label>
-                    <input type="number" id="price" name="price" min="0" step="0.01" value={newItem.price} onChange={handleItemChange} required />
+                    <input
+                      type="number"
+                      id="price"
+                      name="price"
+                      min="0"
+                      step="0.01"
+                      value={newItem.price}
+                      onChange={handleItemChange}
+                      required
+                    />
                   </div>
 
                   <div className="form-group">
                     <label htmlFor="quantity">Quantity</label>
-                    <input type="number" id="quantity" name="quantity" min="1" value={newItem.quantity} onChange={handleItemChange} required />
+                    <input
+                      type="number"
+                      id="quantity"
+                      name="quantity"
+                      min="1"
+                      value={newItem.quantity}
+                      onChange={handleItemChange}
+                      required
+                    />
                   </div>
                 </div>
 
@@ -325,22 +381,52 @@ const Profile = () => {
             <form onSubmit={handleEditItem}>
               <div className="form-group">
                 <label>Product Name</label>
-                <input type="text" name="name" value={editingItem.name} onChange={handleEditChange} required />
+                <input
+                  type="text"
+                  name="name"
+                  value={editingItem.name}
+                  onChange={handleEditChange}
+                  required
+                />
               </div>
+
               <div className="form-group">
                 <label>Description</label>
-                <textarea name="description" value={editingItem.description} onChange={handleEditChange} required />
+                <textarea
+                  name="description"
+                  value={editingItem.description}
+                  onChange={handleEditChange}
+                  required
+                />
               </div>
+
               <div className="form-row">
                 <div className="form-group">
                   <label>Price</label>
-                  <input type="number" name="price" step="0.01" min="0" value={editingItem.price} onChange={handleEditChange} required />
+                  <input
+                    type="number"
+                    name="price"
+                    step="0.01"
+                    min="0"
+                    value={editingItem.price}
+                    onChange={handleEditChange}
+                    required
+                  />
                 </div>
+
                 <div className="form-group">
                   <label>Quantity</label>
-                  <input type="number" name="quantity" min="1" value={editingItem.quantity} onChange={handleEditChange} required />
+                  <input
+                    type="number"
+                    name="quantity"
+                    min="1"
+                    value={editingItem.quantity}
+                    onChange={handleEditChange}
+                    required
+                  />
                 </div>
               </div>
+
               <div className="modal-actions">
                 <button type="submit" className="save-btn">Save</button>
                 <button type="button" className="cancel-btn" onClick={() => setEditModalOpen(false)}>Cancel</button>
