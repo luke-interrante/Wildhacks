@@ -124,7 +124,7 @@ const Home = () => {
       )}
       
       <section className="featured-products">
-        <h2>Featured Products</h2>
+        <h2><b>Featured Products</b></h2>
         {loading ? (
           <div className="loading">Loading products...</div>
         ) : error ? (
@@ -175,7 +175,7 @@ const Home = () => {
       </section>
       
       <section className="farmers-spotlight">
-        <h2>Featured Farmers</h2>
+        <h2><b>Featured Farmers</b></h2>
         {loading ? (
           <div className="loading">Loading farmers...</div>
         ) : error ? (
