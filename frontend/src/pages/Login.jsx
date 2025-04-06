@@ -68,11 +68,6 @@ const Login = () => {
         <div className="auth-switch">
           <p>Need an account? <Link to="/signup">Sign Up</Link></p>
         </div>
-        
-        <div className="auth-options">
-          <p>Or continue with</p>
-          <button className="google-auth">Google</button>
-        </div>
       </div>
     </div>
   )
