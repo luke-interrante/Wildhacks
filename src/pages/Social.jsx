@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import supabase, { supabaseUrl } from '../util/supabaseClient.js'
 // import FileUploader from '../components/FileUploader.jsx'
+import { v4 as uuidv4 } from 'uuid'
 
 // Upload file to Supabase Storage using standard upload
 async function uploadFile(file) {
@@ -132,7 +133,8 @@ const Social = () => {
         console.log('here2')
 
         // TODO: generate a unique file name (uuid) for the image
-        const file_name = newPost.image_file.name
+        const file_name = `${uuidv4()}.${newPost.image_file.name.split('.').pop()}`
+        console.log('file_name:', file_name)
 
         const { data, error: uploadError } = await supabase
           .storage
