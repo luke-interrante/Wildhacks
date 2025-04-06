@@ -38,7 +38,7 @@
   --accent-text-color: 
   */
   --background-color: #1D1D1D;
-  --accent-background-color:#256D35;
+  --accent-background-color:#1F1F1F;
   --button-background-dark: #369E4E;
   --button-background-hover-dark: var(--green-10);
   --button-background-light: var(--green-3);
@@ -305,7 +305,7 @@ button {
 
 .product-image {
   height: 200px;
-  background-color: #f0f0f0;
+  background-color: --accent-background-color;
   display: flex;
   align-items: center;
   justify-content: center;
