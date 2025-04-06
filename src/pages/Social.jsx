@@ -3,16 +3,6 @@ import supabase, { supabaseUrl } from '../util/supabaseClient.js'
 // import FileUploader from '../components/FileUploader.jsx'
 import { v4 as uuidv4 } from 'uuid'
 
-// Upload file to Supabase Storage using standard upload
-async function uploadFile(file) {
-  const { data, error } = await supabase.storage.from('bucket_name').upload('file_path', file)
-  if (error) {
-    // Handle error
-  } else {
-    // Handle success
-  }
-}
-
 const Social = () => {
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
