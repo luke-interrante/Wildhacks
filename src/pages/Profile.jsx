@@ -12,7 +12,7 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState('profile')
 
   const [newItem, setNewItem] = useState({ name: '', description: '', price: '', quantity: '' })
-  const [editedProfile, setEditedProfile] = useState({ first_name: '', last_name: '', phone_number: '', profile_photo: '' })
+  const [editedProfile, setEditedProfile] = useState({ first_name: '', last_name: '', phone_num: '', pfp: '' })
 
   // Edit modal state
   const [editingItem, setEditingItem] = useState(null)
@@ -44,8 +44,8 @@ const Profile = () => {
         setEditedProfile({
           first_name: userData.first_name,
           last_name: userData.last_name,
-          phone_number: userData.phone_number || '',
-          profile_photo: userData.profile_photo || ''
+          phone_num: userData.phone_num || '',
+          pfp: userData.pfp || ''
         })
 
         if (userData.is_farmer) {
@@ -237,13 +237,13 @@ const Profile = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="phone_number">Phone</label>
-                <input type="tel" id="phone_number" name="phone_number" value={editedProfile.phone_number} onChange={handleProfileChange} />
+                <label htmlFor="phone_num">Phone</label>
+                <input type="tel" id="phone_num" name="phone_num" value={editedProfile.phone_num} onChange={handleProfileChange} />
               </div>
 
               <div className="form-group">
                 <label htmlFor="profile_photo">Profile Photo URL</label>
-                <input type="text" id="profile_photo" name="profile_photo" value={editedProfile.profile_photo} onChange={handleProfileChange} />
+                <input type="text" id="profile_photo" name="profile_photo" value={editedProfile.pfp} onChange={handleProfileChange} />
               </div>
 
               <button type="submit" className="update-profile-btn">Update Profile</button>
