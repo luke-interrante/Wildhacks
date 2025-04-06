@@ -2,6 +2,7 @@ import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { UserAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
 import CartDropdown from './CartDropdown'
+import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
   const { session, signOut } = UserAuth();
@@ -23,7 +24,7 @@ const Navbar = () => {
     <>
       <nav className="navbar">
         <div className="logo">
-          <Link to="/">Farmer's Market</Link>
+          <Link to="/"><b>Farmer's Place</b></Link>
         </div>
         <div className="nav-links">
           <Link to="/" className="nav-link">Home</Link>
@@ -32,7 +33,7 @@ const Navbar = () => {
           
           {session ? (
             <>
-              <Link to="/profile" className="nav-link">Profile</Link>
+              <Link to="/profile" className="nav-link"><b>Profile</b></Link>
               <div className="nav-user">
                 <div className="cart-icon" onClick={toggleCart}>
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
@@ -49,9 +50,12 @@ const Navbar = () => {
           ) : (
             <>
               <Link to="/login" className="nav-link">Login</Link>
-              <Link to="/signup" className="nav-link">Sign Up</Link>
+              <Link to="/signup" className="nav-link"><b>Sign Up</b></Link>
             </>
           )}
+          <div className="nav-theme-toggle">
+            <ThemeToggle /> {/* Add the ThemeToggle button here */}
+          </div>
         </div>
       </nav>
       <div className="content-container">

@@ -1,14 +1,21 @@
 @import "tailwindcss";
 /* Base styles */
-:root {
-  --primary-color: #4caf50;
-  --primary-dark: #388e3c;
-  --primary-light: #c8e6c9;
+:root, .dark-theme {
+  --primary-color: #40BB5C;
+  --title-color: #3FBB5B;
+  --primary-dark: var(--green-10);
+  --primary-light: var(--green-4); 
   --secondary-color: #ff9800;
-  --text-color: #333;
-  --text-light: #666;
-  --background-color: #f9f9f9;
-  --border-color: #ddd;
+  --text-color: var(--gray-12); 
+  --accent-text-color: var(--green-11);
+  --text-light: var(--green-1);
+  --button-background-dark: var(--green-9);
+  --button-hover-background-dark: var(--green-10);
+  --button-background-light: var(--green-5);
+  --button-hover-background-light: var(--green-5);
+  --background-color: #FFFFFd; 
+  --accent-background-color: #FFFFFd; 
+  --border-color: var(--green-6);
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   --radius: 8px;
@@ -19,6 +26,17 @@
   --spacing-xl: 2rem;
 }
 
+/* light theme specific styles */
+:root {
+  /* --accent-background-color: var(--color-background); */
+}
+
+/* dark theme specific styles */
+.dark-theme {
+  /* --background-color: var(--green-1);
+  --accent-background-color: var(--green-3); */
+}
+
 body {
   background-color: var(--background-color);
   color: var(--text-color);
@@ -26,6 +44,11 @@ body {
   margin: 0;
   padding: 0;
 }
+
+strong {
+  color: #c62828;
+}
+
 
 .app-container {
   min-height: 100vh;
@@ -60,7 +83,7 @@ button {
 
 /* Navbar */
 .navbar {
-  background-color: white;
+  background-color: var(--accent-background-color); /* white; */
   box-shadow: var(--shadow);
   padding: var(--spacing-md) var(--spacing-xl);
   display: flex;
@@ -69,16 +92,18 @@ button {
 }
 
 .logo a {
-  font-size: 1.5rem;
+  font-size: var(--spacing-lg);
   font-weight: 700;
-  color: var(--primary-color);
+  color: var(--title-color);
   text-decoration: none;
+  font-size-adjust: .6;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
   gap: var(--spacing-lg);
+  align-items: center;
 }
 
 .nav-link {
@@ -124,9 +149,9 @@ button {
 
 .nav-signout {
   font-size: 14px;
-  padding: var(--spacing-xs) var(--spacing-sm);
+  /* padding: var(--spacing-sm); */
   background: none;
-  color: var(--text-light);
+  color: var(--text-dark);
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
 }
@@ -134,6 +159,7 @@ button {
 .nav-signout:hover {
   background-color: #f5f5f5;
   color: var(--text-color);
+  font-size: 15.5px;
 }
 
 /* Home page */
@@ -145,7 +171,7 @@ button {
 
 .hero {
   padding: var(--spacing-xl);
-  background-color: white;
+  background-color: var(--accent-background-color); /* white; */
   border-radius: var(--radius);
   box-shadow: var(--card-shadow);
   text-align: center;
@@ -154,7 +180,7 @@ button {
 
 .hero h1 {
   font-size: 2.5rem;
-  color: var(--primary-color);
+  color: var(--accent-text-color);
   margin-bottom: var(--spacing-md);
 }
 
@@ -163,36 +189,41 @@ button {
   justify-content: center;
   gap: var(--spacing-md);
   margin-top: var(--spacing-lg);
+  /* font-size: .9rem; */
 }
 
 .primary-btn {
-  background-color: var(--primary-color);
-  color: white;
+  background-color: var(--button-background-dark);
+  color: var(--text-light); /* white; */ /* TODO: change to lighter color? or at least change it to a top-level variable */
   padding: var(--spacing-md) var(--spacing-lg);
   border-radius: var(--radius);
   font-weight: 600;
+  width: 225px;
 }
 
 .primary-btn:hover {
-  background-color: var(--primary-dark);
+  background-color: var(--button-hover-background-dark);
+  scale: 1.05;
 }
 
 .secondary-btn {
-  background-color: white;
-  color: var(--primary-color);
+  background-color: var(--button-background-light); /* white; */
+  color: var(--accent-text-color);
   border: 1px solid var(--primary-color);
   padding: var(--spacing-md) var(--spacing-lg);
   border-radius: var(--radius);
   font-weight: 600;
+  width: 225px;
 }
 
 .secondary-btn:hover {
-  background-color: var(--primary-light);
+  background-color: var(--button-hover-background-light);
+  scale: 1.05;
 }
 
 .featured-products, .farmers-spotlight {
   padding: var(--spacing-lg);
-  background-color: white;
+  background-color: var(--accent-background-color); /* white; */
   border-radius: var(--radius);
   box-shadow: var(--card-shadow);
   margin-bottom: var(--spacing-xl);
@@ -327,7 +358,7 @@ button {
 }
 
 .auth-form-container {
-  background-color: white;
+  background-color: var(--background-color);
   padding: var(--spacing-xl);
   border-radius: var(--radius);
   box-shadow: var(--card-shadow);
@@ -339,6 +370,14 @@ button {
   color: var(--primary-color);
   margin-bottom: var(--spacing-lg);
   text-align: center;
+  font-size-adjust: .45;
+}
+
+.auth-form-container h2 {
+  color: var(--primary-color);
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+  font-size-adjust: .8;
 }
 
 .form-group {
@@ -412,19 +451,6 @@ button {
 .auth-options {
   margin-top: var(--spacing-xl);
   text-align: center;
-}
-
-.google-auth {
-  background-color: white;
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-  padding: var(--spacing-md);
-  width: 100%;
-  margin-top: var(--spacing-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-sm);
 }
 
 .error-message {
@@ -691,6 +717,21 @@ button {
   .marketplace-filters {
     flex-direction: column;
   }
+}
+/* Theme toggle button */
+.nav-theme-toggle button {
+  background: none;
+  /* padding: var(--spacing-xs) var(--spacing-sm); */
+  /* border: 1px solid var(--border-color); */
+  /* border-radius: var(--radius); */
+  color: var(--text-color);
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-theme-toggle button:hover {
+  background-color: var(--button-background-light);
+  color: var(--primary-color);
 }
 
 /* Cart Icon in Navbar */
