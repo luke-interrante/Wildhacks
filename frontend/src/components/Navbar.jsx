@@ -30,15 +30,15 @@ const Navbar = () => {
           
           {session ? (
             <>
-              <Link to="/profile" className="nav-link"><strong>Profile</strong></Link>
+              <Link to="/profile" className="nav-link"><b>Profile</b></Link>
               <div className="nav-user">
-                <button onClick={handleSignOut} className="nav-signout">Sign Out</button>
+                <button onClick={handleSignOut} className="nav-signout"><b>Sign Out</b></button>
               </div>
             </>
           ) : (
             <>
               <Link to="/login" className="nav-link">Login</Link>
-              <Link to="/signup" className="nav-link"><strong>Sign Up</strong></Link>
+              <Link to="/signup" className="nav-link"><b>Sign Up</b></Link>
             </>
           )}
           <div className="nav-theme-toggle">
