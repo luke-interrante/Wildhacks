@@ -1,45 +1,34 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import supabase from '../util/supabaseClient.js'
-import { useAuth } from '../context/AuthContext.jsx'
+import { UserAuth } from '../context/AuthContext.jsx'
 
 const Login = () => {
-  const [email, setEmail] = useState('')
-  const [pass, setPass] = useState('')
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
   
-  const navigate = useNavigate()
-  const { isAuthenticated } = useAuth()
-  
-  // Redirect if already logged in
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/')
-    }
-  }, [isAuthenticated, navigate])
+  const navigate = useNavigate();
+  const { signInUser } = UserAuth();
 
   const handleLogin = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
+    e.preventDefault();
+    const { session, error } = await signInUser(email, password);
 
-    try {
-      // Handle sign in
-      const { error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password: pass
-      })
+    if (error) {
+      setError(error);
 
-      if (authError) throw authError
-      
-      navigate('/')
-    } catch (error) {
-      setError(error.message)
-    } finally {
-      setLoading(false)
+      setTimeout( () => {
+        setError("");
+      }, 3000); // 3000 ms = 3 sec
+    } else {
+      navigate('/home');
     }
-  }
+
+    if (session) {
+      // closeModal();
+      setError('');
+    }
+  };
 
   return (
     <div className="auth-container">
@@ -54,7 +43,7 @@ const Login = () => {
             <input
               type="email"
               id="email"
-              value={email}
+              placeholder='Email'
               onChange={(e) => setEmail(e.target.value)}
               required
             />
@@ -65,14 +54,14 @@ const Login = () => {
             <input
               type="password"
               id="password"
-              value={pass}
-              onChange={(e) => setPass(e.target.value)}
+              placeholder='Password'
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
           
-          <button type="submit" className="auth-button" disabled={loading}>
-            {loading ? 'Processing...' : 'Login'}
+          <button type="submit" className="auth-button">
+            Login
           </button>
         </form>
         

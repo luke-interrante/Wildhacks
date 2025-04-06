@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import './colors.css'
 import './App.css'
 
@@ -15,26 +15,34 @@ import Navbar from './components/Navbar'
 
 // Auth provider
 import { AuthProvider } from './context/AuthContext';
+import {
+  PrivateRoute,
+  PublicOnlyRoute,
+} from './routes/ProtectedRoutes';
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <div className="app-container">
-          <Navbar />
-          <main className="content">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/marketplace" element={<Marketplace />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/social" element={<Social />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-            </Routes>
-          </main>
-        </div>
+        <Routes>
+            <Route path='/' element={<Navbar />} >
+                {/* Redirect from root to home or login depending on auth status */}
+                <Route index element={<Navigate to="/home" replace />} />
+                
+                <Route element={<PrivateRoute />}>
+                      <Route path="/home" element={<Home />} />
+                      <Route path="/marketplace" element={<Marketplace />} />
+                      <Route path="/profile" element={<Profile />} />
+                      <Route path="/social" element={<Social />} />
+                      <Route path="/profile/:id" element={<Profile />} />
+                </Route>
+                <Route element={<PublicOnlyRoute />}>
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/signup" element={<Signup />} />
+                </Route>
+            </Route>
+        </Routes>
       </BrowserRouter>
     </AuthProvider>
   )
 }
-

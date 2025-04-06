@@ -57,6 +57,14 @@ body {
   width: 100%;
 }
 
+/* Content container for all pages */
+.content-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-xl);
+}
+
 button {
   cursor: pointer;
   border: none;
@@ -645,22 +653,27 @@ button {
 /* Responsive */
 @media (max-width: 768px) {
   .navbar {
+    padding: var(--spacing-sm) var(--spacing-md);
     flex-direction: column;
-    padding: var(--spacing-md);
+    gap: var(--spacing-sm);
   }
   
   .nav-links {
-    margin-top: var(--spacing-md);
-    width: 100%;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-md);
   }
   
   .content {
     padding: var(--spacing-md);
   }
   
+  .content-container {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+  
   .hero h1 {
-    font-size: 1.8rem;
+    font-size: 2rem;
   }
   
   .cta-buttons {
@@ -679,8 +692,12 @@ button {
 
 @media (max-width: 480px) {
   .nav-links {
-    flex-wrap: wrap;
-    gap: var(--spacing-sm);
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .content-container {
+    padding: var(--spacing-md) var(--spacing-sm);
   }
   
   .marketplace-filters {
