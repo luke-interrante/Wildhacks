@@ -204,7 +204,7 @@ const Profile = () => {
   if (!userDetails) return <div>Please log in to view your profile</div>
   
   return (
-    <div className="profile-container">
+    <div className="profile-container" style={{width: '100%'}}>
       <div className="profile-header">
         <div className="profile-photo">
           {userDetails.profile_photo ? (
@@ -245,9 +245,9 @@ const Profile = () => {
         </button>
       </div>
       
-      <div className="profile-content mx-auto">
+      <div className="profile-content">
         {activeTab === 'profile' && (
-          <div className="profile-edit">
+          <div className="profile-edit w-full max-w-md">
             <div className='flex justify-between'>
               <p className='text-xl'> <strong>My Profile</strong> </p>
               <button className="primary-btn">Edit Profile</button>
