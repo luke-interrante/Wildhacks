@@ -76,38 +76,70 @@ const Social = () => {
     }))
   }
   
-  const handleAddPost = (e) => {
-    e.preventDefault()
-    
+  const handleAddPost = async (e) => {
+    e.preventDefault();
+  
     if (!userDetails?.is_farmer) {
-      alert('Only farmers can create posts')
-      return
+      alert('Only farmers can create posts');
+      return;
     }
-    
-    // In a real app, we would insert into a posts table
-    // For now, we'll just add to the local state
-    
-    const newPostObject = {
-      id: posts.length + 1,
-      content: newPost.content,
-      image_url: newPost.image_url || `https://source.unsplash.com/random/800x600?farm&sig=${posts.length}`,
-      created_at: new Date().toISOString(),
-      user: {
-        id: userDetails.id,
-        first_name: userDetails.first_name,
-        last_name: userDetails.last_name,
-        profile_photo: userDetails.profile_photo || `https://ui-avatars.com/api/?name=${userDetails.first_name}+${userDetails.last_name}&background=random`
+  
+    try {
+      // Insert the new post into the 'posts' table in Supabase
+      const { data, error, status } = await supabase
+        .from('posts')
+        .insert([
+          {
+            user_id: userDetails.id,
+            caption: newPost.content,
+            image_url: newPost.image_url || `https://source.unsplash.com/random/800x600?farm&sig=${posts.length}`,
+            created_at: new Date(),
+          }
+        ]);
+        //.single(); // Ensure we only get one post as a result
+
+      console.log(userDetails.id)
+      console.log('Supabase response:', data, error, status);
+
+      if (error) {
+        throw error;
       }
+
+      console.log('data')
+      // Check if data is valid before accessing properties
+      if (!data) {
+        console.log("data not valid")
+        throw new Error('Failed to create post: No data returned');
+      }
+
+      // Add the new post to the local state (posts)
+      const newPostObject = {
+        id: data.post_id,
+        content: newPost.content,
+        image_url: newPost.image_url || `https://source.unsplash.com/random/800x600?farm&sig=${posts.length}`,
+        created_at: data.created_at,
+        user: {
+          id: userDetails.id,
+          first_name: userDetails.first_name,
+          last_name: userDetails.last_name,
+          profile_photo: userDetails.profile_photo || `https://ui-avatars.com/api/?name=${userDetails.first_name}+${userDetails.last_name}&background=random`
+        }
+      };
+
+      console.log(newPostObject)
+  
+      setPosts([newPostObject, ...posts]);
+  
+      // Reset form
+      setNewPost({
+        content: '',
+        image_url: ''
+      });
+    } catch (error) {
+      console.error('Error adding post:', error);
+      alert('Failed to create post');
     }
-    
-    setPosts([newPostObject, ...posts])
-    
-    // Reset form
-    setNewPost({
-      content: '',
-      image_url: ''
-    })
-  }
+  };
   
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' }
