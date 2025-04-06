@@ -66,7 +66,7 @@ const Login = () => {
         </form>
         
         <div className="auth-switch">
-          <p>Need an account? <Link to="/signup">Sign Up</Link></p>
+          <p>Need an account? <Link to="/signup"><strong>Sign Up</strong></Link></p>
         </div>
       </div>
     </div>

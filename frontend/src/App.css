@@ -1,19 +1,19 @@
 /* Base styles */
 :root, .dark-theme {
-  --primary-color: var(--green-11); /* #4caf50; */
-  --primary-dark: var(--green-10); /* #388e3c; */
-  --primary-light: var(--green-4); /* #c8e6c9; */
-  --secondary-color: #ff9800; /* TODO: pick a color */
-  --text-color: var(--gray-12); /* #333; */
+  --primary-color: var(--green-11); 
+  --primary-dark: var(--green-10);
+  --primary-light: var(--green-4); 
+  --secondary-color: #ff9800;
+  --text-color: var(--gray-12); 
   --accent-text-color: var(--green-11);
-  --text-light: var(--green-1); /* #666; */
+  --text-light: var(--green-1);
   --button-background-dark: var(--green-9);
   --button-hover-background-dark: var(--green-10);
   --button-background-light: var(--green-5);
   --button-hover-background-light: var(--green-5);
-  --background-color: var(--color-background); /* var(--green-2); */ /* #f9f9f9; */
-  --accent-background-color: var(--gray-2); /* var(--color-background); */ /* white; */
-  --border-color: var(--green-6); /* #ddd; */
+  --background-color: var(--color-background); 
+  --accent-background-color: var(--gray-2); 
+  --border-color: var(--green-6);
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   --radius: 8px;
@@ -708,9 +708,9 @@ button {
 /* Theme toggle button */
 .nav-theme-toggle button {
   background: none;
-  border: 1px solid var(--border-color);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--radius);
+  /* padding: var(--spacing-xs) var(--spacing-sm); */
+  /* border: 1px solid var(--border-color); */
+  /* border-radius: var(--radius); */
   color: var(--text-color);
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
