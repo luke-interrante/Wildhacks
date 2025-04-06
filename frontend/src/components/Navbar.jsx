@@ -20,7 +20,7 @@ const Navbar = () => {
     <>
       <nav className="navbar">
         <div className="logo">
-          <Link to="/">Farmer's Market</Link>
+          <Link to="/"><b>Farmer's Place</b></Link>
         </div>
         <div className="nav-links">
           <Link to="/" className="nav-link">Home</Link>
@@ -29,7 +29,7 @@ const Navbar = () => {
           
           {session ? (
             <>
-              <Link to="/profile" className="nav-link">Profile</Link>
+              <Link to="/profile" className="nav-link"><strong>Profile</strong></Link>
               <div className="nav-user">
                 <button onClick={handleSignOut} className="nav-signout">Sign Out</button>
               </div>
@@ -37,7 +37,7 @@ const Navbar = () => {
           ) : (
             <>
               <Link to="/login" className="nav-link">Login</Link>
-              <Link to="/signup" className="nav-link">Sign Up</Link>
+              <Link to="/signup" className="nav-link"><strong>Sign Up</strong></Link>
             </>
           )}
         </div>
