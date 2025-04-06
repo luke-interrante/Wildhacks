@@ -76,38 +76,63 @@ const Social = () => {
     }))
   }
   
-  const handleAddPost = (e) => {
-    e.preventDefault()
-    
+  const handleAddPost = async (e) => {
+    e.preventDefault();
+  
     if (!userDetails?.is_farmer) {
-      alert('Only farmers can create posts')
-      return
+      alert('Only farmers can create posts');
+      return;
     }
-    
-    // In a real app, we would insert into a posts table
-    // For now, we'll just add to the local state
-    
-    const newPostObject = {
-      id: posts.length + 1,
-      content: newPost.content,
-      image_url: newPost.image_url || `https://source.unsplash.com/random/800x600?farm&sig=${posts.length}`,
-      created_at: new Date().toISOString(),
-      user: {
-        id: userDetails.id,
-        first_name: userDetails.first_name,
-        last_name: userDetails.last_name,
-        profile_photo: userDetails.profile_photo || `https://ui-avatars.com/api/?name=${userDetails.first_name}+${userDetails.last_name}&background=random`
+  
+    try {
+      // Step 1: Insert the new post into Supabase
+      const { error, status } = await supabase
+        .from('posts')
+        .insert([
+          {
+            user_id: userDetails.id,
+            caption: newPost.content,
+            image_url: newPost.image_url || `https://source.unsplash.com/random/800x600?farm&sig=${posts.length}`,
+            created_at: new Date(),
+          }
+        ]);
+  
+      console.log('Supabase insert status:', { error, status });
+  
+      if (error) {
+        throw new Error(error.message); // Log detailed error message if it exists
       }
+  
+      // Step 2: Manually construct the new post object
+      const newPostObject = {
+        id: Date.now(),  // Use a temporary unique id (you can change this later)
+        content: newPost.content,
+        image_url: newPost.image_url || null,
+        created_at: new Date().toISOString(), // Assign the created_at timestamp manually
+        user: {
+          id: userDetails.id,
+          first_name: userDetails.first_name,
+          last_name: userDetails.last_name,
+          profile_photo: userDetails.profile_photo || `https://ui-avatars.com/api/?name=${userDetails.first_name}+${userDetails.last_name}&background=random`
+        }
+      };
+  
+      console.log('New post object:', newPostObject); // Log the new post object
+  
+      // Step 3: Update local state with the new post
+      setPosts([newPostObject, ...posts]);
+  
+      // Step 4: Reset the new post form
+      setNewPost({
+        content: '',
+        image_url: ''
+      });
+    } catch (error) {
+      console.error('Error adding post:', error);
+      alert('Failed to create post: ' + error.message);
     }
-    
-    setPosts([newPostObject, ...posts])
-    
-    // Reset form
-    setNewPost({
-      content: '',
-      image_url: ''
-    })
-  }
+  };
+  
   
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' }
