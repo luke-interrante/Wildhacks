@@ -103,7 +103,7 @@ const Social = () => {
           {
             user_id: userDetails.id,
             caption: newPost.content,
-            image_url: newPost.image_url || `https://source.unsplash.com/random/800x600?farm&sig=${posts.length}`,
+            image_url: newPost.image_url || null,
             created_at: new Date(),
           }
         ]);
