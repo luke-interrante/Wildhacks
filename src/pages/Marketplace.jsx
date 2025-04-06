@@ -175,12 +175,12 @@ const Marketplace = () => {
           ) : (
             items.map(item => (
               <div className="product-card" key={item.id}>
-                <div className="product-image" onClick={() => openProductModal(item)}>
-                  <img src={item.image_url} alt={item.name} />
+                <div className="product-image">
+                <img src={item.image_url} alt={item.name} />
                   <div className="image-placeholder"></div>
                 </div>
                 <div className="product-info">
-                  <h3 onClick={() => openProductModal(item)}>{item.name}</h3>
+                  <h3 className='cursor-pointer' onClick={ () => openProductModal(item) }>{item.name}</h3>
                   <p className="product-price">${(item.price).toFixed(2)}</p>
                   {item.farmer_id && farmers[item.farmer_id] && (
                     <p className="product-farmer">

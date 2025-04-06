@@ -11,6 +11,7 @@ const Profile = () => {
   const [error, setError] = useState(null)
   const [farmerItems, setFarmerItems] = useState([])
   const [activeTab, setActiveTab] = useState('profile')
+  const [editingMode, setEditingMode] = useState(false);
 
   const [newItem, setNewItem] = useState({
     name: '',
@@ -167,6 +168,7 @@ const Profile = () => {
 
   const updateProfile = async (e) => {
     e.preventDefault()
+    setEditingMode(!editingMode);
     try {
       const { error } = await supabase
         .from('users')
@@ -287,7 +289,10 @@ const Profile = () => {
       <div className="profile-content">
         {activeTab === 'profile' && (
           <div className="profile-edit">
-            <h2>Edit Profile</h2>
+            <div className='flex justify-between'>
+              <p className='text-xl black'> <strong>My Info</strong> </p>
+              <button onClick={ () => setEditingMode(!editingMode) }className="primary-btn bg-black">Edit Profile</button>
+            </div>
             <form onSubmit={updateProfile}>
               <div className="form-group">
                 <label htmlFor="first_name">First Name</label>
@@ -297,6 +302,7 @@ const Profile = () => {
                   name="first_name"
                   value={editedProfile.first_name}
                   onChange={handleProfileChange}
+                  disabled={!editingMode}
                   required
                 />
               </div>
@@ -309,6 +315,7 @@ const Profile = () => {
                   name="last_name"
                   value={editedProfile.last_name}
                   onChange={handleProfileChange}
+                  disabled={!editingMode}
                   required
                 />
               </div>
@@ -321,6 +328,7 @@ const Profile = () => {
                   name="phone_num"
                   value={editedProfile.phone_num}
                   onChange={handleProfileChange}
+                  disabled={!editingMode}
                 />
               </div>
 
@@ -332,6 +340,7 @@ const Profile = () => {
                   name="profile_photo"
                   value={editedProfile.pfp}
                   onChange={handleProfileChange}
+                  disabled={!editingMode}
                 />
               </div>
 
