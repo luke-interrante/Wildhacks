@@ -156,11 +156,12 @@ const Social = () => {
       
       {userDetails?.is_farmer && (
         <div className="new-post-form">
-          <h2>Create a New Post</h2>
-          <form onSubmit={handleAddPost}>
+          <p className='text-xl'> <strong>My Profile</strong> </p>
+            <form onSubmit={handleAddPost}>
             <div className="form-group">
               <label htmlFor="content">Post Content</label>
               <textarea
+                className='min-h-20'
                 id="content"
                 name="content"
                 placeholder="Share updates about your farm..."
