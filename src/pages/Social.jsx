@@ -281,7 +281,7 @@ const Social = () => {
       
         {userDetails?.is_farmer && (
           <div className="new-post-form">
-            <p className='text-xl'> <strong>My Profile</strong> </p>
+            <p className='text-xl'> <strong>Make a Post</strong> </p>
               <form onSubmit={handleAddPost}>
               <div className="form-group">
                 <label htmlFor="content">Post Content</label>
