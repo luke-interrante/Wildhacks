@@ -5,8 +5,8 @@ const Home = () => {
   return (
     <div className="home-container">
       <section className="hero">
-        <h1>Welcome to the Community Farmer's Market</h1>
-        <p>Connect with local farmers, buy fresh produce, and join our growing community</p>
+        <h1><b>Welcome to the Farmer's Place.</b></h1>
+        <p>Connect with <strong>local</strong> farmers, buy <strong>fresh</strong> produce, and join our growing <strong>community</strong>.</p>
         <div className="cta-buttons">
           <Link to="/marketplace">
           <button className="primary-btn">Browse Marketplace</button>
