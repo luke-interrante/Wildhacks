@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import supabase from '../util/supabaseClient.js'
+import supabase, { supabaseUrl } from '../util/supabaseClient.js'
+import { v4 as uuidv4 } from 'uuid'
 
 const Profile = () => {
   const navigate = useNavigate()
@@ -11,8 +12,19 @@ const Profile = () => {
   const [farmerItems, setFarmerItems] = useState([])
   const [activeTab, setActiveTab] = useState('profile')
 
-  const [newItem, setNewItem] = useState({ name: '', description: '', price: '', quantity: '' })
-  const [editedProfile, setEditedProfile] = useState({ first_name: '', last_name: '', phone_number: '', profile_photo: '' })
+  const [newItem, setNewItem] = useState({
+    name: '',
+    description: '',
+    image_url: '',
+    price: '',
+    quantity: ''
+  })
+  const [editedProfile, setEditedProfile] = useState({
+    first_name: '',
+    last_name: '',
+    phone_number: '',
+    profile_photo: ''
+  })
 
   // Edit modal state
   const [editingItem, setEditingItem] = useState(null)
@@ -70,8 +82,36 @@ const Profile = () => {
 
   const handleAddItem = async (e) => {
     e.preventDefault()
+
     try {
       if (!userDetails?.is_farmer) return alert('Only farmers can add items')
+
+      if (!newItem.image_url) {
+        alert('Please select an image file')
+        return
+      }
+
+      // Upload image to Supabase Storage
+      const file_name = `${uuidv4()}.${newItem.image_url.name.split('.').pop()}`
+      console.log('** file name:', file_name)
+      
+      console.log('attempting to upload file to supabase storage')
+
+      const { upload_data, error: uploadError } = await supabase
+        .storage
+        .from('farmers-place')  // bucket name
+        .upload(`product-images/${file_name}`, newItem.image_url)  // file path, file
+
+      if (uploadError) {
+        throw new Error(uploadError.message)
+      }
+
+      console.log('file uploaded successfully:')
+
+      const publicURL = `${supabaseUrl}/storage/v1/object/public/farmers-place/product-images/${file_name}`
+      console.log('public URL:', publicURL)
+
+      newItem.image_url = publicURL
 
       const newItemData = {
         ...newItem,
@@ -80,11 +120,22 @@ const Profile = () => {
         quantity: parseInt(newItem.quantity, 10)
       }
 
+      // Insert new item into the database
       const { data, error } = await supabase.from('items').insert([newItemData]).select()
       if (error) throw error
 
+      // Update local state with the new item
       setFarmerItems(prev => [...prev, data[0]])
-      setNewItem({ name: '', description: '', price: '', quantity: '' })
+
+      // Reset the form
+      setNewItem({
+        name: '',
+        description: '',
+        image_url: '',
+        price: '',
+        quantity: ''
+      })
+      
       alert('Item added successfully!')
     } catch (error) {
       console.error('Error adding item:', error)
@@ -95,6 +146,18 @@ const Profile = () => {
   const handleItemChange = (e) => {
     const { name, value } = e.target
     setNewItem(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleFileChange = (e) => {
+    const { name, files } = e.target
+
+    // TODO: delete console.logs
+    console.log('** Just added file!')
+    console.log('** file:', files[0])
+    console.log('** file name:', files[0].name)
+
+    const file = files[0]
+    setNewItem(prev => ({ ...prev, [name]: file }))
   }
 
   const handleProfileChange = (e) => {
@@ -304,6 +367,17 @@ const Profile = () => {
                     value={newItem.description}
                     onChange={handleItemChange}
                     required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="image_file">Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    id="image_file"
+                    name="image_url"
+                    onChange={handleFileChange}
                   />
                 </div>
 
