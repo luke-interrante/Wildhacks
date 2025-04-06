@@ -1,5 +1,16 @@
 import { useState, useEffect } from 'react'
 import supabase from '../util/supabaseClient.js'
+// import FileUploader from '../components/FileUploader.jsx'
+
+// Upload file to Supabase Storage using standard upload
+async function uploadFile(file) {
+  const { data, error } = await supabase.storage.from('bucket_name').upload('file_path', file)
+  if (error) {
+    // Handle error
+  } else {
+    // Handle success
+  }
+}
 
 const Social = () => {
   const [posts, setPosts] = useState([])
@@ -9,8 +20,10 @@ const Social = () => {
   const [userDetails, setUserDetails] = useState(null)
   const [newPost, setNewPost] = useState({
     content: '',
-    image_url: ''
+    image_url: '',
+    image_file: ''
   })
+  const [selectedFile, setSelectedFile] = useState(null)
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -86,6 +99,21 @@ const Social = () => {
       [name]: value
     }))
   }
+
+  const handleFileChange = (e) => {
+    const { name, files } = e.target
+
+    // TODO: delete console.logs
+    console.log('** Just added file!')
+    console.log('** file:', files[0])
+    console.log('** file name:', files[0].name)
+
+    const file = files[0]
+    setNewPost(prev => ({
+      ...prev,
+      [name]: file
+    }))
+  }
   
   const handleAddPost = async (e) => {
     e.preventDefault();
@@ -96,6 +124,45 @@ const Social = () => {
     }
   
     try {
+      console.log('here1')
+      // Step 0: If an image file is selected, upload it to Supabase Storage
+      if (newPost.image_file) {
+        console.log('here2')
+        const { data, error: uploadError } = await supabase
+          .storage
+          .from('farmers-place')  // bucket name
+          .upload(`post-images/${newPost.image_file.name}`, newPost.image_file)  // file path, file
+  
+        console.log('here3')
+
+        if (uploadError) {
+          throw new Error(uploadError.message);
+        }
+
+        console.log('here4')
+  
+        // Get the public URL of the uploaded image
+        const { publicURL, error: urlError } = supabase
+          .storage
+          .from('posts')
+          .getPublicUrl(data.path)
+
+        console.log('here5')
+  
+        if (urlError) {
+          throw new Error(urlError.message);
+        }
+
+        console.log('here6')
+  
+        // Update the newPost with the public URL
+        newPost.image_url = publicURL;
+
+        console.log('here7')
+      }
+
+      console.log('here8')
+
       // Step 1: Insert the new post into Supabase
       const { error, status } = await supabase
         .from('posts')
@@ -107,6 +174,8 @@ const Social = () => {
             created_at: new Date(),
           }
         ]);
+
+      console.log('here9')
   
       console.log('Supabase insert status:', { error, status });
   
@@ -136,7 +205,8 @@ const Social = () => {
       // Step 4: Reset the new post form
       setNewPost({
         content: '',
-        image_url: ''
+        image_url: '',
+        image_file: ''
       });
     } catch (error) {
       console.error('Error adding post:', error);
@@ -182,6 +252,22 @@ const Social = () => {
                   value={newPost.image_url}
                   onChange={handlePostChange}
                 />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="image_file">Upload image (optional)</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  id="image_file"
+                  name="image_file"
+                  // value={newPost.image_file}
+                  onChange={handleFileChange}
+                />
+                {/* <FileUploader
+                  onFileSelectSuccess={(file) => setSelectedFile(file)}
+                  onFileSelectError={({ error }) => alert(error)}
+                /> */}
               </div>
             
               <button type="submit" className="post-btn">Share Post</button>
