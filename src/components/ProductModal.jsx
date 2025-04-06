@@ -9,13 +9,13 @@ const ProductModal = ({ item, farmer, onClose }) => {
 
   const handleQuantityChange = (e) => {
     const value = parseInt(e.target.value);
-    if (value > 0 && value <= item.quantity_available) {
+    if (value > 0 && value <= item.quantity) {
       setQuantity(value);
     }
   };
 
   const incrementQuantity = () => {
-    if (quantity < item.quantity_available) {
+    if (quantity < item.quantity) {
       setQuantity(prevQuantity => prevQuantity + 1);
     }
   };
@@ -74,9 +74,9 @@ const ProductModal = ({ item, farmer, onClose }) => {
             </div>
             
             <div className="product-modal-availability">
-              <span className={item.quantity_available > 10 ? 'in-stock' : 'low-stock'}>
-                {item.quantity_available > 0 
-                  ? `${item.quantity_available} available` 
+              <span className={item.quantity > 10 ? 'in-stock' : 'low-stock'}>
+                {item.quantity > 0 
+                  ? `${item.quantity} available` 
                   : 'Out of stock'}
               </span>
             </div>
@@ -97,14 +97,14 @@ const ProductModal = ({ item, farmer, onClose }) => {
                 <input
                   type="number"
                   min="1"
-                  max={item.quantity_available}
+                  max={item.quantity}
                   value={quantity}
                   onChange={handleQuantityChange}
                 />
                 <button 
                   className="quantity-btn" 
                   onClick={incrementQuantity}
-                  disabled={quantity >= item.quantity_available}
+                  disabled={quantity >= item.quantity}
                 >
                   +
                 </button>
@@ -113,7 +113,7 @@ const ProductModal = ({ item, farmer, onClose }) => {
               <button 
                 className="add-to-cart-btn"
                 onClick={handleAddToCart}
-                disabled={item.quantity_available === 0}
+                disabled={item.quantity === 0}
               >
                 Add to Cart
               </button>
