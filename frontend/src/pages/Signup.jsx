@@ -113,11 +113,6 @@ const Signup = () => {
         <div className="auth-switch">
           <p>Already have an account? <Link to="/login">Login</Link></p>
         </div>
-        
-        <div className="auth-options">
-          <p>Or continue with</p>
-          <button className="google-auth">Google</button>
-        </div>
       </div>
     </div>
   )
