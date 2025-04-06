@@ -54,8 +54,8 @@ const ProductModal = ({ item, farmer, onClose }) => {
         
         <div className="product-modal-content">
           <div className="product-modal-image">
-            {/* Placeholder for product image */}
-            <div className="modal-image-placeholder"></div>
+            <img src={item.image_url} alt={item.name} />
+            {/* <div className="modal-image-placeholder"></div> */}
           </div>
           
           <div className="product-modal-details">
