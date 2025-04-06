@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import supabase from '../util/supabaseClient.js'
+import supabase, { supabaseUrl } from '../util/supabaseClient.js'
 // import FileUploader from '../components/FileUploader.jsx'
 
 // Upload file to Supabase Storage using standard upload
@@ -124,14 +124,20 @@ const Social = () => {
     }
   
     try {
+      // TODO: delete console.logs
       console.log('here1')
+
       // Step 0: If an image file is selected, upload it to Supabase Storage
       if (newPost.image_file) {
         console.log('here2')
+
+        // TODO: generate a unique file name (uuid) for the image
+        const file_name = newPost.image_file.name
+
         const { data, error: uploadError } = await supabase
           .storage
           .from('farmers-place')  // bucket name
-          .upload(`post-images/${newPost.image_file.name}`, newPost.image_file)  // file path, file
+          .upload(`post-images/${file_name}`, newPost.image_file)  // file path, file
   
         console.log('here3')
 
@@ -142,16 +148,19 @@ const Social = () => {
         console.log('here4')
   
         // Get the public URL of the uploaded image
-        const { publicURL, error: urlError } = supabase
-          .storage
-          .from('posts')
-          .getPublicUrl(data.path)
+        // const { publicURL, error: urlError } = supabase
+        //   .storage
+        //   .from('farmers-place')  // bucket name
+        //   .getPublicUrl(data.path)
+
+        const publicURL = `${supabaseUrl}/storage/v1/object/public/farmers-place/post-images/${file_name}`
 
         console.log('here5')
+        console.log('publicURL:', publicURL)
   
-        if (urlError) {
-          throw new Error(urlError.message);
-        }
+        // if (urlError) {
+        //   throw new Error(urlError.message);
+        // }
 
         console.log('here6')
   
@@ -162,6 +171,7 @@ const Social = () => {
       }
 
       console.log('here8')
+      console.log('newPost:', newPost)
 
       // Step 1: Insert the new post into Supabase
       const { error, status } = await supabase
