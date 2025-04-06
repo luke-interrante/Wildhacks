@@ -1,30 +1,34 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import supabase from '../util/supabaseClient.js'
+import { UserAuth } from '../context/AuthContext.jsx'
 
 const Profile = () => {
-  const navigate = useNavigate()
-  const [_user, setUser] = useState(null)
-  const [userDetails, setUserDetails] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [farmerItems, setFarmerItems] = useState([])
-  const [activeTab, setActiveTab] = useState('profile')
+  const navigate = useNavigate();
+  const [_user, setUser] = useState(null);
+  const [userDetails, setUserDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [farmerItems, setFarmerItems] = useState([]);
+  const [activeTab, setActiveTab] = useState('profile');
+  const { session, signOut } = UserAuth();
   
   // New item form state
   const [newItem, setNewItem] = useState({
     name: '',
     description: '',
     price: '',
-    quantity: ''
+    quantity: '',
+    farmer_id: '',
+    created_at: '',
   })
   
   // Edit profile form state
   const [editedProfile, setEditedProfile] = useState({
     first_name: '',
     last_name: '',
-    phone_number: '',
-    profile_photo: ''
+    phone_num: '',
+    pfp: ''
   })
   
   useEffect(() => {
@@ -52,7 +56,7 @@ const Profile = () => {
           navigate('/login')
           return
         }
-        
+
         setUser(user)
         
         // Get user details from our users table
@@ -64,14 +68,17 @@ const Profile = () => {
         
         if (detailsError) throw detailsError
         
+        // set userDetails to this user's current data
+        console.log('user data', userData);
         setUserDetails(userData)
+        // set editedProfile to current data as a placeholder
         setEditedProfile({
           first_name: userData.first_name,
           last_name: userData.last_name,
-          phone_number: userData.phone_number || '',
-          profile_photo: userData.profile_photo || ''
+          phone_num: userData.phone_num || '',
+          pfp: userData.pfp || ''
         })
-        
+
         // If user is a farmer, fetch their items
         if (userData.is_farmer) {
           const { data: itemsData, error: itemsError } = await supabase
@@ -81,6 +88,7 @@ const Profile = () => {
           
           if (itemsError) throw itemsError
           
+          // set farmerItems to fetched items (or none)
           setFarmerItems(itemsData || [])
         }
       } catch (error) {
@@ -155,13 +163,14 @@ const Profile = () => {
     e.preventDefault()
     
     try {
+      console.log('attempting to update profile info with data:', editedProfile);
       const { error } = await supabase
         .from('users')
         .update({
           first_name: editedProfile.first_name,
           last_name: editedProfile.last_name,
-          phone_number: editedProfile.phone_number,
-          profile_photo: editedProfile.profile_photo
+          phone_num: editedProfile.phone_num,
+          pfp: editedProfile.pfp
         })
         .eq('id', userDetails.id)
       
@@ -174,20 +183,19 @@ const Profile = () => {
       }))
       
       alert('Profile updated successfully!')
-    } catch (error) {
+    } catch (error) { 
       console.error('Error updating profile:', error)
       alert(`Failed to update profile: ${error.message}`)
     }
   }
   
-  const handleSignOut = async () => {
+  const handleSignOut = async (e) => {
+    e.preventDefault();
     try {
-      const { error } = await supabase.auth.signOut()
-      if (error) throw error
-      navigate('/login')
-    } catch (error) {
-      console.error('Error signing out:', error)
-      alert('Error signing out')
+      await signOut();
+      navigate('/signup')
+    } catch (err) {
+      console.log("an error occured", err);
     }
   }
   
@@ -237,10 +245,13 @@ const Profile = () => {
         </button>
       </div>
       
-      <div className="profile-content">
+      <div className="profile-content mx-auto">
         {activeTab === 'profile' && (
           <div className="profile-edit">
-            <h2>Edit Profile</h2>
+            <div className='flex justify-between'>
+              <p className='text-xl'> <strong>My Profile</strong> </p>
+              <button className="primary-btn">Edit Profile</button>
+            </div>
             <form onSubmit={updateProfile}>
               <div className="form-group">
                 <label htmlFor="first_name">First Name</label>
@@ -270,9 +281,9 @@ const Profile = () => {
                 <label htmlFor="phone_number">Phone</label>
                 <input
                   type="tel"
-                  id="phone_number"
-                  name="phone_number"
-                  value={editedProfile.phone_number}
+                  id="phone_num"
+                  name="phone_num"
+                  value={editedProfile.phone_num}
                   onChange={handleProfileChange}
                 />
               </div>
@@ -281,9 +292,9 @@ const Profile = () => {
                 <label htmlFor="profile_photo">Profile Photo URL</label>
                 <input
                   type="text"
-                  id="profile_photo"
-                  name="profile_photo"
-                  value={editedProfile.profile_photo}
+                  id="pfp"
+                  name="pfp"
+                  value={editedProfile.pfp}
                   onChange={handleProfileChange}
                 />
               </div>
