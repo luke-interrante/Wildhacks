@@ -100,11 +100,13 @@ const Home = () => {
   return (
     <div className="home-container">
       <section className="hero">
-        <h1><b>Welcome to the Farmer's Place.</b></h1>
-        <p>Connect with <strong>local</strong> farmers, buy <strong>fresh</strong> produce, and join our growing <strong>community</strong>.</p>
+        {/* <h1><b>Welcome to the Farmer's Place.</b></h1> */}
+        <h1><b>From Local Farms To Your Table</b></h1>
+        {/* <p>Connect with <strong>local</strong> farmers, buy <strong>fresh</strong> produce, and join our growing <strong>community</strong>.</p> */}
+        <p>Support <strong>local</strong> farmers and enjoy <strong>fresh</strong>, <strong>sustainable</strong> produce delivered straight to your door. Join our virtual farmers market today!</p>
         <div className="cta-buttons">
           <Link to="/marketplace">
-          <button className="primary-btn">Browse Marketplace</button>
+          <button className="primary-btn">Shop Now</button>
           </Link>
           { !session && (
             <Link to="/signup">
@@ -124,7 +126,8 @@ const Home = () => {
       )}
       
       <section className="featured-products">
-        <h2><b>Featured Products</b></h2>
+        <h2 className="home">Featured Products</h2>
+        <h3 className="home">A selection of our freshest and most popular products available right now.</h3>
         {loading ? (
           <div className="loading">Loading products...</div>
         ) : error ? (
